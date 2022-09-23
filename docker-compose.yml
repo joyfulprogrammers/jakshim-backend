@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:13
+    ports:
+      - '5440:5432'
+    container_name: jakshim_postgresql
+    environment:
+      - POSTGRES_DB=test
+      - POSTGRES_USER=test
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+  redis:
+    image: redis
+    ports:
+      - '6385:6379'
+    command: redis-server --port 6379
+    container_name: jakshim_redis
+    hostname: jakshim_redis
+    labels:
+      - 'name=redis'
+      - 'mode=standalone'
