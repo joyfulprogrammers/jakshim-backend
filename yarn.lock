@@ -712,6 +712,11 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
+"@js-joda/core@^5.4.0":
+  version "5.4.0"
+  resolved "https://registry.yarnpkg.com/@js-joda/core/-/core-5.4.0.tgz#f241281fa0de9729f04ea9517851feb19ada29d3"
+  integrity sha512-AeQQWcDiuUtI6BXX59VR9KkdF4sLOeaicwpQKnNu8iBKJ8O1+M9FLs7ZCbdAMWmDLMoeaG1HG8PMbkuyuMTVgw==
+
 "@nestjs/cli@^9.0.0":
   version "9.1.1"
   resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-9.1.1.tgz#d84c1655a41bcbda9b42ffa6ba7344f0f471efc4"
