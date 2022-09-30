@@ -2,9 +2,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as path from 'path';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
-export function getPgRealTypeOrmModule() {
-  const entityPath = path.join(__dirname, '../../entity/domain/**/*.entity.ts');
+import { User } from '../../entity/domain/user/User.entity';
 
+export function getPgRealTypeOrmModule() {
   return TypeOrmModule.forRoot({
     maxQueryExecutionTime: 1000,
     extra: {
@@ -13,9 +13,9 @@ export function getPgRealTypeOrmModule() {
       max: 20,
     },
     type: 'postgres',
-    entities: [entityPath],
+    entities: [User],
     autoLoadEntities: true,
-    synchronize: false,
+    synchronize: true,
     logging: false,
     namingStrategy: new SnakeNamingStrategy(),
     host: 'localhost',
