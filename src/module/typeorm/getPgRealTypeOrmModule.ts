@@ -1,8 +1,10 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
-import * as path from 'path';
+
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 
 import { User } from '../../entity/domain/user/User.entity';
+import { Achievement } from '../../entity/domain/achievement/Achievement.entity';
+import { Habits } from '../../entity/domain/habits/Habits.entity';
 
 export function getPgRealTypeOrmModule() {
   return TypeOrmModule.forRoot({
@@ -13,7 +15,7 @@ export function getPgRealTypeOrmModule() {
       max: 20,
     },
     type: 'postgres',
-    entities: [User],
+    entities: [Achievement, Habits, User],
     autoLoadEntities: true,
     synchronize: true,
     logging: false,
