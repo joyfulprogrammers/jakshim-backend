@@ -16,7 +16,7 @@ export class Habits extends BaseTimeEntity {
   name: string;
 
   @Column({ comment: '습관 테마 색상' })
-  theme_color: string;
+  themeColor: string;
 
   @Column({ comment: '습관 폰트 색상' })
   fontColor: string;
