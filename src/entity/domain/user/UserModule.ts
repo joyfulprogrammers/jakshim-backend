@@ -7,4 +7,4 @@ import { User } from './User.entity';
   imports: [TypeOrmExModule.forCustomRepository([User])],
   exports: [TypeOrmModule],
 })
-export class UserModule {}
+export class UserEntityModule {}
