@@ -1,4 +1,4 @@
-// import { CustomMigrationGenerator } from './CustomMigrationGenerator';
+import { CustomMigrationGenerator } from './CustomMigrationGenerator';
 import { CustomNamingStrategy } from './CustomNamingStrategy';
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
@@ -17,12 +17,12 @@ const config: MikroOrmModuleOptions = {
   schemaGenerator: {
     createForeignKeyConstraints: false,
   },
-  // migrations: {
-  //   disableForeignKeys: true,
-  //   path: 'scripts/migrations',
-  //   pathTs: 'scripts/migrations',
-  //   generator: CustomMigrationGenerator,
-  // },
+  migrations: {
+    disableForeignKeys: true,
+    path: 'scripts/migrations',
+    pathTs: 'scripts/migrations',
+    generator: CustomMigrationGenerator,
+  },
   driverOptions: {
     connection: {
       statement_timeout: 1000,
