@@ -1,6 +1,12 @@
-import { Repository } from 'typeorm';
+import { InjectRepository } from '@mikro-orm/nestjs';
+import { EntityRepository } from '@mikro-orm/postgresql';
+import { Injectable } from '@nestjs/common';
 import { User } from '../../../entity/domain/user/User.entity';
-import { CustomRepository } from '../../../ex-custom-repository/typeorm-ex.decorator';
 
-@CustomRepository(User)
-export class UserRepository extends Repository<User> {}
+@Injectable()
+export class UserRepository {
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: EntityRepository<User>,
+  ) {}
+}
