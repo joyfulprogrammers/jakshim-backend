@@ -22,6 +22,10 @@
   },
   "dependencies": {
     "@js-joda/core": "^5.4.0",
+    "@mikro-orm/core": "^5.4.2",
+    "@mikro-orm/nestjs": "^5.1.2",
+    "@mikro-orm/postgresql": "^5.4.2",
+    "@mikro-orm/reflection": "^5.4.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-fastify": "^9.0.11",
@@ -35,6 +39,9 @@
     "typeorm-naming-strategies": "^4.1.0"
   },
   "devDependencies": {
+    "@mikro-orm/cli": "^5.4.2",
+    "@mikro-orm/migrations": "^5.4.2",
+    "@mikro-orm/seeder": "^5.4.2",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
@@ -75,6 +82,12 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "mikro-orm": {
+      "useTsNode": true,
+      "configPaths": [
+        "./libs/entity/src/config/mikro-orm.cli-config.ts"
+      ]
+    }
   }
 }
