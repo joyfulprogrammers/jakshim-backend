@@ -9,7 +9,7 @@ import { Habit } from '../habit/Habit.entity';
 import { HabitType } from '../habit/type/HabitType';
 import { User } from '../user/User.entity';
 
-@Entity()
+@Entity({ tableName: 'achievements' })
 export class Achievement extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;

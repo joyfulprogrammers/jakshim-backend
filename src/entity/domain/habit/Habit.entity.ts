@@ -8,7 +8,7 @@ import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
 import { HabitType } from './type/HabitType';
 
-@Entity()
+@Entity({ tableName: 'habits' })
 export class Habit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
