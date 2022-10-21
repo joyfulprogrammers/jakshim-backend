@@ -12,6 +12,8 @@ const config: MikroOrmModuleOptions = {
   port: 5440,
   metadataProvider: TsMorphMetadataProvider,
   autoLoadEntities: true,
+  entities: ['../entity/domain'],
+  entitiesTs: ['../entity/domain'],
   namingStrategy: CustomNamingStrategy,
   allowGlobalContext: true, // 개발 환경이라면 true
   schemaGenerator: {

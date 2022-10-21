@@ -1,9 +1,10 @@
-import { PrimaryKey, Property } from '@mikro-orm/core';
-import { LocalDateTime } from '@js-joda/core';
+import { CustomBigIntType } from '../type/CustomBigIntType';
 import { LocalDateTimeType } from '../type/LocalDateTimeType';
+import { LocalDateTime } from '@js-joda/core';
+import { PrimaryKey, Property } from '@mikro-orm/core';
 
-export abstract class BaseTimeEntity {
-  @PrimaryKey()
+export abstract class BigIntegerBaseTimeEntity {
+  @PrimaryKey({ type: CustomBigIntType, columnType: 'bigserial' })
   id: number;
 
   @Property({
