@@ -11,6 +11,11 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
 
-  await app.listen(3000);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+
+  // eslint-disable-next-line no-console
+  console.log(`jakshim-backend가 ${port}번 포트에서 실행 중입니다.`);
 }
-bootstrap();
+
+void bootstrap();

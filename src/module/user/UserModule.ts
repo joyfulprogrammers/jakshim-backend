@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserEntityModule } from '../../entity/domain/user/UserModule';
+import { UserEntityModule } from '../../entity/domain/user/UserEntityModule';
 import { UserRepository } from './repository/UserRepository';
 import { UserController } from './UserController';
 import { UserService } from './UserService';

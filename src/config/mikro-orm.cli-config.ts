@@ -20,8 +20,8 @@ const config: MikroOrmModuleOptions = {
   },
   migrations: {
     disableForeignKeys: true,
-    path: 'scripts/migrations',
-    pathTs: 'scripts/migrations',
+    path: '../../scripts/migrations',
+    pathTs: '../../scripts/migrations',
     generator: CustomMigrationGenerator,
   },
 };

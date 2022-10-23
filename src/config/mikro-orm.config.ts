@@ -12,8 +12,6 @@ const config: MikroOrmModuleOptions = {
   port: 5440,
   metadataProvider: TsMorphMetadataProvider,
   autoLoadEntities: true,
-  entities: ['../entity/domain'],
-  entitiesTs: ['../entity/domain'],
   namingStrategy: CustomNamingStrategy,
   allowGlobalContext: true, // 개발 환경이라면 true
   schemaGenerator: {
@@ -21,8 +19,8 @@ const config: MikroOrmModuleOptions = {
   },
   migrations: {
     disableForeignKeys: true,
-    path: 'scripts/migrations',
-    pathTs: 'scripts/migrations',
+    path: '../../scripts/migrations',
+    pathTs: '../../scripts/migrations',
     generator: CustomMigrationGenerator,
   },
   driverOptions: {
