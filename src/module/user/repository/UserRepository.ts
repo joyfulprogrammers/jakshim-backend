@@ -12,11 +12,15 @@ export class UserRepository {
   ) {}
 
   async save(req: UserSaveRequest) {
-    const response = await this.userRepository
-      .createQueryBuilder()
-      .insert(req)
-      .execute();
+    const user = new User();
+    user.nickname = req.nickname;
+    this.userRepository.persist(user);
+    await this.userRepository.flush();
+    // const response = await this.userRepository
+    // .createQueryBuilder()
+    // .insert(req)
+    // .execute();
 
-    return response;
+    // return response;
   }
 }
