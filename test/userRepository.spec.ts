@@ -1,7 +1,7 @@
 import { UserEntityModule } from '../src/entity/domain/user/UserEntityModule';
 
 import { getPgTestMikroOrmModule } from './getPgTestMikroOrmModule';
-import { UserRepository } from '../src/module/user/repository/UserRepository';
+import { UserRepository } from '../src/module/user/UserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MikroORM } from '@mikro-orm/core';
 
