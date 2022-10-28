@@ -59,5 +59,6 @@ module.exports = {
     'max-nested-callbacks': ['error', 5],
     'no-await-in-loop': 'off',
     'require-atomic-updates': 'off',
+    'no-return-await': 'off',
   },
 };

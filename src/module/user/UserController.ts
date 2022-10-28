@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
+import { UserLoginRequest } from './dto/UserLoginRequest';
 import { UserSaveRequest } from './dto/UserSaveRequest';
 import { UserService } from './UserService';
 
@@ -8,13 +9,13 @@ export class UserController {
 
   @Post('/signup')
   async save(@Body() req: UserSaveRequest) {
-    await this.userService.save(req);
+    return await this.userService.save(req);
   }
 
-  @Get()
-  async find() {
-    return {
-      message: 'Hello World!',
-    };
+  @Post('/login')
+  async login(@Body() req: UserLoginRequest) {
+    const result = await this.userService.login(req);
+
+    return !!result;
   }
 }

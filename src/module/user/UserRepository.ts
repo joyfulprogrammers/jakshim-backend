@@ -16,4 +16,8 @@ export class UserRepository {
     user.nickname = req.nickname;
     await this.userRepository.persistAndFlush(user);
   }
+
+  async findByNickname(nickname: string): Promise<User | null> {
+    return await this.userRepository.findOne({ nickname });
+  }
 }
