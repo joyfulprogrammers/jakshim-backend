@@ -28,7 +28,6 @@
     "@mikro-orm/reflection": "^5.4.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
-    "@nestjs/platform-fastify": "^9.0.11",
     "class-validator": "^0.13.2",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
