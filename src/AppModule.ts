@@ -1,6 +1,16 @@
+import { Duration } from '@js-joda/core';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  OnApplicationBootstrap,
+} from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+import { Server } from 'http';
+import * as passport from 'passport';
 import config from './config/mikro-orm.config';
+import { SessionMiddleware } from './middleware/SessionMiddleware';
 import { RedisModule } from './module/redis/RedisModule';
 import { SessionOptionModule } from './module/session/SessionOptionModule';
 import { UserModule } from './module/user/UserModule';
@@ -17,4 +27,17 @@ import { UserModule } from './module/user/UserModule';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule, OnApplicationBootstrap {
+  constructor(private readonly adpaterHost: HttpAdapterHost) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(SessionMiddleware, passport.initialize(), passport.session())
+      .forRoutes('*');
+  }
+
+  onApplicationBootstrap() {
+    const server: Server = this.adpaterHost.httpAdapter.getHttpServer();
+    server.keepAliveTimeout = Duration.ofSeconds(61).toMillis();
+  }
+}
