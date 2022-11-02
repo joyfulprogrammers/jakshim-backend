@@ -11,6 +11,7 @@ import { Server } from 'http';
 import * as passport from 'passport';
 import config from './config/mikro-orm.config';
 import { SessionMiddleware } from './middleware/SessionMiddleware';
+import { AuthModule } from './module/auth/AuthModule';
 import { RedisModule } from './module/redis/RedisModule';
 import { SessionOptionModule } from './module/session/SessionOptionModule';
 import { UserModule } from './module/user/UserModule';
@@ -22,6 +23,7 @@ import { UserModule } from './module/user/UserModule';
     SessionOptionModule.register('BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k', 30),
 
     // route modules
+    AuthModule,
     UserModule,
   ],
   controllers: [],
