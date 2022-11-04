@@ -2,18 +2,14 @@ import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { AuthService } from '../AuthService';
 import { AuthSignInRequest } from '../dto/AuthSignInRequest';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { AuthSessionDto } from '../dto/AuthSessionDto';
 
 @Injectable()
 export class AuthLocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
-    super({
-      usernameField: 'email',
-      passwordField: 'password',
-      passReqToCallback: true,
-    });
+    super();
   }
 
   async validate(request: any): Promise<AuthSessionDto> {
