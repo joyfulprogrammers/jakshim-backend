@@ -16,6 +16,7 @@ export class AuthController {
   @Post('/signin')
   async signIn(@Session() authSessionDto: AuthSessionDto) {
     try {
+      console.log('authSessionDto', authSessionDto);
       return ResponseEntity.OK_WITH<AuthSessionDto>(authSessionDto);
     } catch (error) {
       let errorCode: ResponseStatus;

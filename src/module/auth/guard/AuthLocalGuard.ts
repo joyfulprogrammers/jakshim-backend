@@ -19,8 +19,10 @@ export class AuthLocalGuard extends AuthGuard('local') {
     const request = context.switchToHttp().getRequest();
     const authSignInRequest = plainToInstance(AuthSignInRequest, request.body);
     await this.validateRequest(authSignInRequest);
-
+    console.log('AuthLocalGuard1');
     const result = (await super.canActivate(context)) as boolean;
+
+    console.log('AuthLocalGuard2', result);
     await super.logIn(request);
 
     return result;
@@ -30,6 +32,8 @@ export class AuthLocalGuard extends AuthGuard('local') {
     const validationErrors: ValidationError[] = await validate(
       authSignInRequest,
     );
+
+    console.log('validationErrors', validationErrors);
 
     if (ValidationError.length > 0) {
       throw new BadRequestException(validationErrors);

@@ -13,6 +13,7 @@ export class AuthSerializer extends PassportSerializer {
     authSessionDto: AuthSessionDto,
     done: (err: Error | null, authSessionDto: any) => void,
   ) {
+    console.log('AuthSerializer.serializeUser', authSessionDto);
     done(null, instanceToPlain(authSessionDto));
   }
 
@@ -20,6 +21,7 @@ export class AuthSerializer extends PassportSerializer {
     authSessionDto: AuthSessionDto,
     done: (err: Error | null, user: any) => void,
   ) {
+    console.log('AuthSerializer.deserializeUser', authSessionDto);
     done(null, plainToInstance(AuthSessionDto, authSessionDto));
   }
 }

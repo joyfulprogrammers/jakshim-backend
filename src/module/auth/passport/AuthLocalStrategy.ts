@@ -9,10 +9,15 @@ import { AuthSessionDto } from '../dto/AuthSessionDto';
 @Injectable()
 export class AuthLocalStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authService: AuthService) {
-    super();
+    super({
+      usernameField: 'nickname',
+      passReqToCallback: true,
+    });
+    console.log('AuthLocalStrategy.constructor');
   }
 
   async validate(request: any): Promise<AuthSessionDto> {
+    console.log('AuthLocalStrategy.validate', request.body);
     const authRequest = plainToClass(AuthSignInRequest, request.body);
     const user = await this.authService.validateUser(authRequest.nickname);
 
