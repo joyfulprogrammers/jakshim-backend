@@ -9,8 +9,8 @@ export class AuthSessionDto {
     this._id = id;
   }
 
-  static create(companyUser: User): AuthSessionDto {
-    return new AuthSessionDto(companyUser.id);
+  static create(user: User): AuthSessionDto {
+    return new AuthSessionDto(user.id);
   }
 
   @Expose()

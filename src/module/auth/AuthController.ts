@@ -1,22 +1,45 @@
 import {
   Controller,
   Post,
-  UseGuards,
   BadRequestException,
+  Body,
+  Req,
 } from '@nestjs/common';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
-import { Session } from '../../decorator/Session';
 import { AuthSessionDto } from './dto/AuthSessionDto';
-import { AuthLocalGuard } from './guard/AuthLocalGuard';
+import { AuthService } from './AuthService';
+import { AuthSignInRequest } from './dto/AuthSignInRequest';
+import { validate, ValidationError } from 'class-validator';
+import { Request } from 'express';
+import * as session from 'express-session';
 
 @Controller('api/auth')
 export class AuthController {
-  @UseGuards(AuthLocalGuard)
+  constructor(private readonly authService: AuthService) {}
+
   @Post('/signin')
-  async signIn(@Session() authSessionDto: AuthSessionDto) {
+  async signIn(@Req() request: Request, @Body() body: AuthSignInRequest) {
     try {
-      return ResponseEntity.OK_WITH<AuthSessionDto>(authSessionDto);
+      const sess = (request as session).session;
+      const validationErrors: ValidationError[] = await validate(body);
+
+      if (ValidationError.length > 0) {
+        throw new BadRequestException(validationErrors);
+      }
+
+      console.log('sess', sess);
+
+      const result = await this.authService.validateUser(body.nickname);
+
+      if (result) {
+        // sess.userId = result.id;
+        return ResponseEntity.OK_WITH<AuthSessionDto>(
+          AuthSessionDto.create(result),
+        );
+      }
+
+      throw new Error('유효하지 않은 닉네임입니다.');
     } catch (error) {
       let errorCode: ResponseStatus;
 
@@ -24,10 +47,7 @@ export class AuthController {
         errorCode = ResponseStatus.BAD_REQUEST;
       } else {
         // eslint-disable-next-line no-console
-        console.error(
-          `관리자 로그인 실패: sessionDto=${JSON.stringify(authSessionDto)}`,
-          error,
-        );
+        console.error(`관리자 로그인 실패`, error);
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 
