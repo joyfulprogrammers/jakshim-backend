@@ -12,16 +12,20 @@ import { AuthService } from './AuthService';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { validate, ValidationError } from 'class-validator';
 import { Request } from 'express';
-import * as session from 'express-session';
+import { Session } from '../../decorator/Session';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signin')
-  async signIn(@Req() request: Request, @Body() body: AuthSignInRequest) {
+  async signIn(
+    @Session() authSessionDto: AuthSessionDto,
+    @Req() request: Request,
+    @Body() body: AuthSignInRequest,
+  ) {
     try {
-      const sess = (request as session).session;
+      const sess = request.session;
       const validationErrors: ValidationError[] = await validate(body);
 
       if (ValidationError.length > 0) {
@@ -33,7 +37,7 @@ export class AuthController {
       const result = await this.authService.validateUser(body.nickname);
 
       if (result) {
-        // sess.userId = result.id;
+        // (sess as any).userId = `${result.id}`;
         return ResponseEntity.OK_WITH<AuthSessionDto>(
           AuthSessionDto.create(result),
         );
