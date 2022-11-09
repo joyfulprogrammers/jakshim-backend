@@ -13,6 +13,7 @@ import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { validate, ValidationError } from 'class-validator';
 import { Request } from 'express';
 import { Session } from '../../decorator/Session';
+import { AuthSignUpRequest } from './dto/AuthSignupRequest';
 
 @Controller('api/auth')
 export class AuthController {
@@ -20,24 +21,23 @@ export class AuthController {
 
   @Post('/signin')
   async signIn(
-    @Session() authSessionDto: AuthSessionDto,
+    @Session() session: any,
     @Req() request: Request,
     @Body() body: AuthSignInRequest,
   ) {
     try {
-      const sess = request.session;
       const validationErrors: ValidationError[] = await validate(body);
 
       if (ValidationError.length > 0) {
         throw new BadRequestException(validationErrors);
       }
 
-      console.log('sess', sess);
+      console.log('sess', session);
 
       const result = await this.authService.validateUser(body.nickname);
 
       if (result) {
-        // (sess as any).userId = `${result.id}`;
+        session.userId = `${result.id}`;
         return ResponseEntity.OK_WITH<AuthSessionDto>(
           AuthSessionDto.create(result),
         );
@@ -52,6 +52,33 @@ export class AuthController {
       } else {
         // eslint-disable-next-line no-console
         console.error(`관리자 로그인 실패`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
+
+  @Post('/signup')
+  async signUp(@Body() body: AuthSignUpRequest) {
+    try {
+      const validationErrors: ValidationError[] = await validate(body);
+
+      if (ValidationError.length > 0) {
+        throw new BadRequestException(validationErrors);
+      }
+
+      await this.authService.signup(body.nickname);
+
+      return ResponseEntity.OK_WITH<boolean>(true);
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`관리자 회원가입 실패`, error);
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 

@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { User } from '../../entity/domain/user/User.entity';
+import { UserSaveRequest } from '../user/dto/UserSaveRequest';
 import { UserService } from '../user/UserService';
 
 @Injectable()
@@ -14,5 +16,15 @@ export class AuthService {
     }
 
     return null;
+  }
+
+  async signup(nickname: string): Promise<boolean> {
+    const req = plainToInstance(UserSaveRequest, { nickname });
+    try {
+      await this.userService.save(req);
+      return true;
+    } catch {
+      return false;
+    }
   }
 }
