@@ -4,7 +4,10 @@ import { SessionConstant } from '../../constant/SessionConstant';
 
 export class RedisModule {
   static register(host: string, port: number): DynamicModule {
-    const redisClient = Redis.createClient({ url: `redis://${host}:${port}` });
+    const redisClient = Redis.createClient({
+      legacyMode: true,
+      url: `redis://${host}:${port}`,
+    });
     void redisClient.connect();
 
     return {
