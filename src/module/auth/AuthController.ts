@@ -4,6 +4,7 @@ import {
   BadRequestException,
   Body,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
@@ -14,11 +15,13 @@ import { validate, ValidationError } from 'class-validator';
 import { Request } from 'express';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
+import { AuthCustomGuard } from './guard/AuthCustomGuard';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(AuthCustomGuard)
   @Post('/signin')
   async signIn(
     @Session() session: any,

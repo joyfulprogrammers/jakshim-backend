@@ -1,4 +1,9 @@
-import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { AuthSessionDto } from '../module/auth/dto/AuthSessionDto';
 
 type Session = any;
 
@@ -7,6 +12,12 @@ export const Session = createParamDecorator(
     const request = ctx.switchToHttp().getRequest();
     const session = request.session;
 
-    return session;
+    if (!request.user) {
+      throw new UnauthorizedException('로그인이 필요합니다.');
+    }
+
+    const authSessionDto: AuthSessionDto = request.user;
+
+    return authSessionDto;
   },
 );
