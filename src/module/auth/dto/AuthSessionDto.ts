@@ -2,7 +2,6 @@ import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../../entity/domain/user/User.entity';
 
 export class AuthSessionDto {
-  isFirstSignIn?: boolean;
   @Exclude() private readonly _id: number;
 
   constructor(id: number) {

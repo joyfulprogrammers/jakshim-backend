@@ -15,38 +15,17 @@ import { validate, ValidationError } from 'class-validator';
 import { Request } from 'express';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
-import { AuthCustomGuard } from './guard/AuthCustomGuard';
+import { AuthLocalGuard } from './guard/AuthLocalGuard';
 
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthCustomGuard)
+  @UseGuards(AuthLocalGuard)
   @Post('/signin')
-  async signIn(
-    @Session() session: any,
-    @Req() request: Request,
-    @Body() body: AuthSignInRequest,
-  ) {
+  async signIn(@Session() authSessionDto: AuthSessionDto) {
     try {
-      const validationErrors: ValidationError[] = await validate(body);
-
-      if (ValidationError.length > 0) {
-        throw new BadRequestException(validationErrors);
-      }
-
-      console.log('sess', session);
-
-      const result = await this.authService.validateUser(body.nickname);
-
-      if (result) {
-        session.userId = `${result.id}`;
-        return ResponseEntity.OK_WITH<AuthSessionDto>(
-          AuthSessionDto.create(result),
-        );
-      }
-
-      throw new Error('유효하지 않은 닉네임입니다.');
+      return ResponseEntity.OK_WITH<AuthSessionDto>(authSessionDto);
     } catch (error) {
       let errorCode: ResponseStatus;
 

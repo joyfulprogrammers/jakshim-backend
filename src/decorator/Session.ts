@@ -10,13 +10,12 @@ type Session = any;
 export const Session = createParamDecorator(
   (_data, ctx: ExecutionContext): Session => {
     const request = ctx.switchToHttp().getRequest();
-    const session = request.session;
 
-    if (!request.user) {
+    if (!request.session) {
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
 
-    const authSessionDto: AuthSessionDto = request.user;
+    const authSessionDto: AuthSessionDto = request.session.passport.user;
 
     return authSessionDto;
   },
