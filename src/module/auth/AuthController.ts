@@ -44,15 +44,8 @@ export class AuthController {
   @Post('/signup')
   async signUp(@Body() body: AuthSignUpRequest) {
     try {
-      const validationErrors: ValidationError[] = await validate(body);
-
-      if (ValidationError.length > 0) {
-        throw new BadRequestException(validationErrors);
-      }
-
-      await this.authService.signup(body.nickname);
-
-      return ResponseEntity.OK_WITH<boolean>(true);
+      await this.authService.signup(body);
+      return ResponseEntity.OK_WITH(true);
     } catch (error) {
       let errorCode: ResponseStatus;
 

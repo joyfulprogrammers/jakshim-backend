@@ -1,5 +1,5 @@
 import { Entity, Property } from '@mikro-orm/core';
-import { PasswordUtil } from 'src/module/auth/util/PasswordUtil';
+import { PasswordUtil } from '../../../module/auth/util/PasswordUtil';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 
 @Entity({ tableName: 'users' })
