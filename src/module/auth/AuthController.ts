@@ -16,6 +16,7 @@ import { Request } from 'express';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
+import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
 
 @Controller('api/auth')
 export class AuthController {
@@ -42,10 +43,21 @@ export class AuthController {
   }
 
   @Post('/signup')
-  async signUp(@Body() body: AuthSignUpRequest) {
+  @ApiOperation({
+    summary: '회원가입 API',
+    description: '회원가입을 합니다.',
+  })
+  @ApiCreatedResponse({
+    description: '회원가입',
+    type: ResponseEntity,
+  })
+  async signUp(
+    @Body() body: AuthSignUpRequest,
+  ): Promise<ResponseEntity<string>> {
     try {
       await this.authService.signup(body);
-      return ResponseEntity.OK_WITH(true);
+
+      return ResponseEntity.OK();
     } catch (error) {
       let errorCode: ResponseStatus;
 
