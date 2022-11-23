@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { User } from '../../entity/domain/user/User.entity';
 import { UserService } from '../user/UserService';
 import { AuthRepository } from './AuthRepository';
+import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
 
 @Injectable()
@@ -11,14 +12,12 @@ export class AuthService {
     private readonly userService: UserService,
   ) {}
 
-  async validateUser(nickname: string): Promise<User | null> {
-    const user = await this.userService.findByNickname(nickname);
-    if (user) {
-      const { ...result } = user; // const { password, ...result } = user; 로 되어있었음
-      return result;
-    }
+  async getAuthorizedUser(req: AuthSignInRequest): Promise<User> {
+    const user = await this.userService.findByEmail(req.email);
 
-    return null;
+    await user.validatePassword(req.password);
+
+    return user;
   }
 
   async signup(req: AuthSignUpRequest) {

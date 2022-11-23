@@ -18,7 +18,7 @@ export class AuthLocalStrategy extends PassportStrategy(Strategy) {
 
   async validate(request: any): Promise<AuthSessionDto> {
     const authRequest = plainToInstance(AuthSignInRequest, request.body);
-    const user = await this.authService.validateUser(authRequest.nickname);
+    const user = await this.authService.getAuthorizedUser(authRequest);
 
     return AuthSessionDto.create(user);
   }

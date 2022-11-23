@@ -3,20 +3,22 @@ import {
   Post,
   BadRequestException,
   Body,
-  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { AuthSessionDto } from './dto/AuthSessionDto';
 import { AuthService } from './AuthService';
-import { AuthSignInRequest } from './dto/AuthSignInRequest';
-import { validate, ValidationError } from 'class-validator';
-import { Request } from 'express';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
-import { ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+} from '@nestjs/swagger';
+import { AuthSignInRequest } from './dto/AuthSignInRequest';
 
 @Controller('api/auth')
 export class AuthController {
@@ -24,6 +26,12 @@ export class AuthController {
 
   @UseGuards(AuthLocalGuard)
   @Post('/signin')
+  @ApiOperation({
+    summary: '로그인 API',
+    description: '로그인을 합니다.',
+  })
+  @ApiBody({ type: AuthSignInRequest })
+  @ApiOkResponse({ type: AuthSessionDto })
   async signIn(@Session() authSessionDto: AuthSessionDto) {
     try {
       return ResponseEntity.OK_WITH<AuthSessionDto>(authSessionDto);

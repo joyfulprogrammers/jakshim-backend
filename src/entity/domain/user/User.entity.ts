@@ -1,4 +1,5 @@
 import { Entity, Property } from '@mikro-orm/core';
+import { DomainException } from 'src/libs/exception/DomainException';
 import { PasswordUtil } from '../../../module/auth/util/PasswordUtil';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 
@@ -24,5 +25,15 @@ export class User extends BaseTimeEntity {
     user.nickname = nickname;
 
     return user;
+  }
+
+  async validatePassword(password: string) {
+    const isMatch = await PasswordUtil.match(password, this.password);
+
+    if (!isMatch) {
+      throw DomainException.NotFound({
+        message: '이메일 또는 비밀번호를 확인해주세요',
+      });
+    }
   }
 }
