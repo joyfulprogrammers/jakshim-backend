@@ -1,7 +1,7 @@
 import { Entity, Property } from '@mikro-orm/core';
-import { DomainException } from 'src/libs/exception/DomainException';
 import { PasswordUtil } from '../../../module/auth/util/PasswordUtil';
 import { BaseTimeEntity } from '../BaseTimeEntity';
+import { DomainException } from '../../../libs/exception/DomainException';
 
 @Entity({ tableName: 'users' })
 export class User extends BaseTimeEntity {
