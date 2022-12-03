@@ -60,7 +60,4 @@ export class Habit extends BaseTimeEntity {
 
   @Property({ comment: '주기가 일주일인지 여부' })
   cycleWeek: boolean;
-
-  @Property({ comment: '주기가 한 달인지 여부' })
-  cycleMonth: boolean;
 }
