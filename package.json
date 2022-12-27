@@ -47,6 +47,7 @@
     "rxjs": "^7.2.0"
   },
   "devDependencies": {
+    "@mikro-orm/better-sqlite": "^5.5.3",
     "@mikro-orm/cli": "^5.5.3",
     "@mikro-orm/migrations": "^5.5.3",
     "@mikro-orm/seeder": "^5.5.3",
