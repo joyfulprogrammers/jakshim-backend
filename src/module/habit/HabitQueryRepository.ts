@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
 
 @Injectable()
-export class HabitApiRepository {
+export class HabitQueryRepository {
   constructor(
     @InjectRepository(Habit)
     private readonly habitRepository: EntityRepository<Habit>,

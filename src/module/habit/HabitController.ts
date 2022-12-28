@@ -2,11 +2,11 @@ import { Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
-import { HabitApiService } from './HabitApiService';
+import { HabitService } from './HabitService';
 
 @Controller('api/habit')
-export class HabitApiController {
-  constructor(private readonly habitService: HabitApiService) {}
+export class HabitController {
+  constructor(private readonly habitService: HabitService) {}
 
   @Post('/create')
   @ApiOperation({

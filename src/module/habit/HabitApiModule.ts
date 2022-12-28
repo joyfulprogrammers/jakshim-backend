@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { HabitApiController } from './HabitApiController';
-import { HabitApiRepository } from './HabitApiRepository';
-import { HabitApiService } from './HabitApiService';
+import { HabitController } from './HabitController';
+import { HabitQueryRepository } from './HabitQueryRepository';
+import { HabitService } from './HabitService';
 
 @Module({
   imports: [],
-  controllers: [HabitApiController],
-  providers: [HabitApiService, HabitApiRepository],
+  controllers: [HabitController],
+  providers: [HabitService, HabitQueryRepository],
 })
 export class HabitApiModule {}
