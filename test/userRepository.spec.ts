@@ -5,7 +5,7 @@ import { UserRepository } from '../src/module/user/UserRepository';
 import { Test, TestingModule } from '@nestjs/testing';
 import { MikroORM } from '@mikro-orm/core';
 
-describe('', () => {
+describe.skip('', () => {
   let userRepository: UserRepository;
   let orm: MikroORM;
 

@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { HabitService } from '../../../src/module/habit/HabitService';
-import { HabitApiModule } from '../../../src/module/habit/HabitApiModule';
 import { getSqliteMikroOrmModule } from '../../getSqliteMikroOrmModule';
-import { Habit } from '../../../src/entity/domain/habit/Habit.entity';
 import { MikroORM } from '@mikro-orm/postgresql';
+import { HabitEntityModule } from '../../../src/entity/domain/habit/HabitEntityModule';
+import { HabitQueryRepository } from '../../../src/module/habit/HabitQueryRepository';
+import { UserEntityModule } from '../../../src/entity/domain/user/UserEntityModule';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -12,22 +13,24 @@ describe('HabitService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [getSqliteMikroOrmModule(), HabitApiModule],
-      providers: [HabitService],
+      imports: [getSqliteMikroOrmModule(), UserEntityModule, HabitEntityModule],
+      providers: [HabitService, HabitQueryRepository],
     }).compile();
 
     orm = module.get(MikroORM);
+    await orm.getSchemaGenerator().refreshDatabase();
+    habitService = module.get(HabitService);
   });
 
   afterAll(() => {
-    void orm.close();
+    void orm.close(true);
   });
 
   beforeEach(() => {
     void Promise.all([orm.getSchemaGenerator().clearDatabase()]);
   });
 
-  it('습관을 생성합니다.', () => {
-    //
+  it('습관을 생성합니다.', async () => {
+    await habitService.createHabit();
   });
 });
