@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   ExecutionContext,
-  Injectable,
+  Injectable
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
@@ -31,7 +31,7 @@ export class AuthLocalGuard extends AuthGuard('local') {
       authSignInRequest,
     );
 
-    if (ValidationError.length > 0) {
+    if (validationErrors.length > 0) {
       throw new BadRequestException(validationErrors);
     }
   }
