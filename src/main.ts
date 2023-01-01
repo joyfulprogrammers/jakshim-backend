@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './AppModule';
+import { HttpExceptionFilter } from './exceptions/HttpExceptionFilter';
 import { synchronizeEntities } from './libs/synchronizeEntities';
 
 async function bootstrap() {
@@ -13,6 +14,8 @@ async function bootstrap() {
     // eslint-disable-next-line no-console
     console.error(error);
   }
+
+  app.useGlobalFilters(new HttpExceptionFilter());
 
   // 이렇게 해야 @Body()를 사용한 후 매개변수를 받으면 인스턴스화를 자동으로 진행한다.
   // https://github.com/nestjs/nest/issues/552
