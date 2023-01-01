@@ -2,6 +2,7 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './AppModule';
+import { BadParameterExceptionFilter } from './exceptions/BadParameterExceptionFilter';
 import { HttpExceptionFilter } from './exceptions/HttpExceptionFilter';
 import { synchronizeEntities } from './libs/synchronizeEntities';
 
@@ -15,7 +16,10 @@ async function bootstrap() {
     console.error(error);
   }
 
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(
+    new HttpExceptionFilter(),
+    new BadParameterExceptionFilter(),
+  );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   // 이렇게 해야 @Body()를 사용한 후 매개변수를 받으면 인스턴스화를 자동으로 진행한다.

@@ -1,7 +1,7 @@
 import {
   BadRequestException,
   ExecutionContext,
-  Injectable
+  Injectable,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { plainToInstance } from 'class-transformer';
