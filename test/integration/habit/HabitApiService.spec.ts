@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { HabitService } from '../../../src/module/habit/HabitService';
 import { getSqliteMikroOrmModule } from '../../getSqliteMikroOrmModule';
-import { MikroORM } from '@mikro-orm/postgresql';
+import { MikroORM } from '@mikro-orm/core';
 import { HabitEntityModule } from '../../../src/entity/domain/habit/HabitEntityModule';
 import { HabitQueryRepository } from '../../../src/module/habit/HabitQueryRepository';
 import { UserEntityModule } from '../../../src/entity/domain/user/UserEntityModule';
