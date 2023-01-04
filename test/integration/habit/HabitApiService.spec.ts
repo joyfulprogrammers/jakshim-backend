@@ -6,6 +6,8 @@ import { MikroORM } from '@mikro-orm/core';
 import { HabitEntityModule } from '../../../src/entity/domain/habit/HabitEntityModule';
 import { HabitQueryRepository } from '../../../src/module/habit/HabitQueryRepository';
 import { UserEntityModule } from '../../../src/entity/domain/user/UserEntityModule';
+import { HabitCreateRequest } from '../../../src/module/habit/dto/HabitCreateRequest';
+import { Habit } from '../../../src/entity/domain/habit/Habit.entity';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -30,7 +32,16 @@ describe('HabitService', () => {
     void Promise.all([orm.getSchemaGenerator().clearDatabase()]);
   });
 
-  it('습관을 생성합니다.', async () => {
-    await habitService.createHabit();
+  it('습관을 정상적으로 생성합니다.', async () => {
+    // given
+    const request = new HabitCreateRequest();
+    const id = request.id;
+
+    // when
+    await habitService.createHabit(request);
+
+    // then
+    const habit = await orm.em.findOne(Habit, { id });
+    expect(habit).not.toBeFalsy();
   });
 });
