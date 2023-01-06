@@ -1,8 +1,8 @@
 import {
-  Controller,
-  Post,
   BadRequestException,
   Body,
+  Controller,
+  Post,
   UseGuards,
 } from '@nestjs/common';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
@@ -19,6 +19,7 @@ import {
   ApiOperation,
 } from '@nestjs/swagger';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
+import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
 
 @Controller('api/auth')
 export class AuthController {
@@ -50,6 +51,7 @@ export class AuthController {
     }
   }
 
+  @UseGuards(NotLoggedInGuard)
   @Post('/signup')
   @ApiOperation({
     summary: '회원가입 API',
