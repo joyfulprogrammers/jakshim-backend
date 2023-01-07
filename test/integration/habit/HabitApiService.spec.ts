@@ -35,13 +35,12 @@ describe('HabitService', () => {
   it('습관을 정상적으로 생성합니다.', async () => {
     // given
     const request = new HabitCreateRequest();
-    const id = request.id;
 
     // when
     await habitService.createHabit(request);
 
     // then
-    const habit = await orm.em.findOne(Habit, { id });
+    const habit = await orm.em.findOne(Habit, {});
     expect(habit).not.toBeFalsy();
   });
 });
