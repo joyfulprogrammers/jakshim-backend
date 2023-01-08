@@ -8,6 +8,7 @@ import { HabitQueryRepository } from '../../../src/module/habit/HabitQueryReposi
 import { UserEntityModule } from '../../../src/entity/domain/user/UserEntityModule';
 import { HabitCreateRequest } from '../../../src/module/habit/dto/HabitCreateRequest';
 import { Habit } from '../../../src/entity/domain/habit/Habit.entity';
+import { TransactionService } from '../../../src/entity/transaction/TransactionService';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -16,7 +17,7 @@ describe('HabitService', () => {
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
       imports: [getSqliteMikroOrmModule(), UserEntityModule, HabitEntityModule],
-      providers: [HabitService, HabitQueryRepository],
+      providers: [HabitService, HabitQueryRepository, TransactionService],
     }).compile();
 
     orm = module.get(MikroORM);

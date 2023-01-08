@@ -3,6 +3,7 @@ import {
   IdentifiedReference,
   ManyToOne,
   Property,
+  Reference,
 } from '@mikro-orm/core';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
@@ -17,13 +18,13 @@ export class Habit extends BaseTimeEntity {
   name: string;
 
   @Property({ comment: '습관 테마 색상' })
-  themeColor: string;
+  themeColor?: string;
 
   @Property({ comment: '습관 폰트 색상' })
-  fontColor: string;
+  fontColor?: string;
 
   @Property({ comment: '습관 아이콘 이미지' })
-  iconImageUrl: string;
+  iconImageUrl?: string;
 
   @Property({ comment: '습관 달성 기준 횟수' })
   targetCount: number;
@@ -60,4 +61,44 @@ export class Habit extends BaseTimeEntity {
 
   @Property({ comment: '주기가 일주일인지 여부' })
   cycleWeek: boolean;
+
+  static create(
+    userId: number,
+    name: string,
+    type: HabitType,
+    isImportant: boolean,
+    cycleMonday: boolean,
+    cycleTuesday: boolean,
+    cycleWednesday: boolean,
+    cycleThursday: boolean,
+    cycleFriday: boolean,
+    cycleSaturday: boolean,
+    cycleSunday: boolean,
+    cycleWeek: boolean,
+    themeColor?: string,
+    fontColor?: string,
+    iconImageUrl?: string,
+    targetCount?: number,
+  ) {
+    const habit = new Habit();
+    habit.name = name;
+    habit.type = type;
+    habit.isImportant = isImportant;
+    habit.cycleMonday = cycleMonday;
+    habit.cycleTuesday = cycleTuesday;
+    habit.cycleWednesday = cycleWednesday;
+    habit.cycleThursday = cycleThursday;
+    habit.cycleFriday = cycleFriday;
+    habit.cycleSaturday = cycleSaturday;
+    habit.cycleSunday = cycleSunday;
+    habit.cycleWeek = cycleWeek;
+    habit.themeColor = themeColor;
+    habit.fontColor = fontColor;
+    habit.iconImageUrl = iconImageUrl;
+    habit.targetCount = targetCount;
+
+    habit.user = Reference.createFromPK(User, userId);
+
+    return habit;
+  }
 }
