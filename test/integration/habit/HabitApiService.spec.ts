@@ -9,6 +9,7 @@ import { UserEntityModule } from '../../../src/entity/domain/user/UserEntityModu
 import { HabitCreateRequest } from '../../../src/module/habit/dto/HabitCreateRequest';
 import { Habit } from '../../../src/entity/domain/habit/Habit.entity';
 import { TransactionService } from '../../../src/entity/transaction/TransactionService';
+import { plainToInstance } from 'class-transformer';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -35,13 +36,29 @@ describe('HabitService', () => {
 
   it('습관을 정상적으로 생성합니다.', async () => {
     // given
-    const request = new HabitCreateRequest();
+    const request = plainToInstance(HabitCreateRequest, {
+      name: 'test',
+      themeColor: '#000000',
+      fontColor: '#ffffff',
+      iconImageUrl: 'https://test.com',
+      targetCount: 1,
+      type: 'POSITIVE',
+      isImportant: true,
+      cycleMonday: true,
+      cycleTuesday: true,
+      cycleWednesday: true,
+      cycleThursday: true,
+      cycleFriday: true,
+      cycleSaturday: true,
+      cycleSunday: true,
+      cycleWeek: false,
+    });
 
     // when
     await habitService.createHabit(request);
 
     // then
-    const habit = await orm.em.findOne(Habit, {});
+    const habit = await orm.em.find(Habit, {});
     expect(habit).not.toBeFalsy();
   });
 });

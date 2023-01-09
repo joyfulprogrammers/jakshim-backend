@@ -26,7 +26,7 @@ export class HabitCreateRequest {
   @ApiProperty()
   @IsString()
   @IsEnum(HabitType)
-  type: string;
+  type: HabitType;
 
   @ApiProperty()
   @IsBoolean()

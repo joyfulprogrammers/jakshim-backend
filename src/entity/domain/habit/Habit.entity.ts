@@ -66,6 +66,7 @@ export class Habit extends BaseTimeEntity {
     userId: number,
     name: string,
     type: HabitType,
+    targetCount: number,
     isImportant: boolean,
     cycleMonday: boolean,
     cycleTuesday: boolean,
@@ -78,7 +79,6 @@ export class Habit extends BaseTimeEntity {
     themeColor?: string,
     fontColor?: string,
     iconImageUrl?: string,
-    targetCount?: number,
   ) {
     const habit = new Habit();
     habit.name = name;
