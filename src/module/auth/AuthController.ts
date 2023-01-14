@@ -11,16 +11,12 @@ import { AuthSessionDto } from './dto/AuthSessionDto';
 import { AuthService } from './AuthService';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
-import { AuthLocalGuard } from './guard/AuthLocalGuard';
-import {
-  ApiBody,
-  ApiCreatedResponse,
-  ApiOkResponse,
-  ApiOperation,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
+import { AuthLocalGuard } from './guard/AuthLocalGuard';
 
+@ApiTags('AUTH')
 @Controller('api/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -31,8 +27,23 @@ export class AuthController {
     summary: '로그인 API',
     description: '로그인을 합니다.',
   })
-  @ApiBody({ type: AuthSignInRequest })
-  @ApiOkResponse({ type: AuthSessionDto })
+  @ApiBody({
+    type: AuthSignInRequest,
+    examples: {
+      test: {
+        summary: '테스트',
+        description: '테스트용 아이디/비밀번호',
+        value: {
+          email: 'rla123@gmail.com',
+          password: 'rla123123!',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: '로그인 성공',
+  })
   async signIn(@Session() authSessionDto: AuthSessionDto) {
     try {
       return ResponseEntity.OK_WITH<AuthSessionDto>(authSessionDto);
@@ -57,9 +68,9 @@ export class AuthController {
     summary: '회원가입 API',
     description: '회원가입을 합니다.',
   })
-  @ApiCreatedResponse({
-    description: '회원가입',
-    type: ResponseEntity,
+  @ApiResponse({
+    status: 201,
+    description: '회원가입 성공',
   })
   async signUp(
     @Body() body: AuthSignUpRequest,

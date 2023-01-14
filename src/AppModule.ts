@@ -15,6 +15,7 @@ import { AuthModule } from './module/auth/AuthModule';
 import { RedisModule } from './module/redis/RedisModule';
 import { SessionOptionModule } from './module/session/SessionOptionModule';
 import { UserModule } from './module/user/UserModule';
+import { HabitApiModule } from './module/habit/HabitApiModule';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UserModule } from './module/user/UserModule';
     // route modules
     AuthModule,
     UserModule,
+    HabitApiModule,
   ],
   controllers: [],
   providers: [],

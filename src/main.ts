@@ -35,7 +35,7 @@ async function bootstrap() {
     .setTitle('작심 API')
     .setDescription('작심 API 문서')
     .setVersion('1.0')
-    .addTag('작심')
+    .addCookieAuth('connect.jakshim.sid')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
