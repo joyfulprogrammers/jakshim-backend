@@ -1,10 +1,16 @@
-import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  ClassSerializerInterceptor,
+  ValidationPipe,
+} from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ValidationError } from 'class-validator';
 import { AppModule } from './AppModule';
 import { BadParameterExceptionFilter } from './exceptions/BadParameterExceptionFilter';
 import { HttpExceptionFilter } from './exceptions/HttpExceptionFilter';
 import { synchronizeEntities } from './libs/synchronizeEntities';
+import { CustomValidationError } from './exceptions/CustomValidationError';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -27,7 +33,13 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      whitelist: true,
+      validationError: {
+        value: true,
+      },
+      exceptionFactory: (validationErrors: ValidationError[] = []) =>
+        new BadRequestException(
+          validationErrors.map((error) => new CustomValidationError(error)),
+        ),
     }),
   );
 
