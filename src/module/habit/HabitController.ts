@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import {
   ApiCookieAuth,
@@ -18,9 +19,10 @@ import { HabitService } from './HabitService';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
+import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
 
 @ApiTags('HABIT')
-// @UseGuards(LoggedInGuard)
+@UseGuards(LoggedInGuard)
 @Controller('api/habit')
 export class HabitController {
   constructor(private readonly habitService: HabitService) {}

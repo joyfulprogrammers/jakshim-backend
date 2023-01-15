@@ -21,7 +21,10 @@ import { HabitApiModule } from './module/habit/HabitApiModule';
   imports: [
     MikroOrmModule.forRoot(config),
     RedisModule.register('localhost', 6385),
-    SessionOptionModule.register('BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k', 30),
+    SessionOptionModule.register(
+      'BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k',
+      Date.now() + 30 * 86400 * 1000,
+    ),
 
     // route modules
     AuthModule,
