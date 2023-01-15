@@ -4,8 +4,8 @@ import {
   Controller,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import {
@@ -56,7 +56,7 @@ export class HabitController {
     }
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   @ApiOperation({
     summary: '습관 수정 API',
     description: '습관을 수정합니다.',
