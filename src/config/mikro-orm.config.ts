@@ -4,6 +4,7 @@ import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 
 const config: MikroOrmModuleOptions = {
+  debug: true,
   type: 'postgresql',
   host: 'localhost',
   user: 'test',
