@@ -2,7 +2,6 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
-import { HabitCreateRequest } from './dto/HabitCreateRequest';
 
 @Injectable()
 export class HabitQueryRepository {
@@ -11,7 +10,10 @@ export class HabitQueryRepository {
     private readonly habitRepository: EntityRepository<Habit>,
   ) {}
 
-  async create(req: HabitCreateRequest): Promise<void> {
-    return Promise.resolve();
+  async findOneByHabitAndUser(habitId: number, userId: number) {
+    return this.habitRepository.findOne({
+      id: habitId,
+      user: { id: userId },
+    });
   }
 }

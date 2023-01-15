@@ -2,28 +2,30 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Param,
+  ParseIntPipe,
   Post,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
 import { HabitService } from './HabitService';
-import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
+import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 
 @ApiTags('HABIT')
-@UseGuards(LoggedInGuard)
+// @UseGuards(LoggedInGuard)
 @Controller('api/habit')
 export class HabitController {
   constructor(private readonly habitService: HabitService) {}
 
-  @Post('/create')
+  @Post()
   @ApiCookieAuth()
   @ApiOperation({
     summary: '습관 생성 API',
@@ -51,14 +53,34 @@ export class HabitController {
     }
   }
 
-  @Post('/update')
+  @Post('/:id')
   @ApiOperation({
     summary: '습관 수정 API',
     description: '습관을 수정합니다.',
+  })
+  @ApiParam({
+    type: 'string', // codegen 을 위한 타입 변경
+    name: 'id',
+    description: '습관 id',
+    example: 2,
   })
   @ApiResponse({
     status: 200,
     description: '습관 수정 성공',
   })
-  async updateHabit() {}
+  async updateHabit(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() request: HabitUpdateRequest,
+  ) {
+    try {
+      await this.habitService.update(id, request);
+
+      return ResponseEntity.OK();
+    } catch (error) {
+      // TODO: logger 로직 필요
+      console.error(error);
+
+      throw error;
+    }
+  }
 }

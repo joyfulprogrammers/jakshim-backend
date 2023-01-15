@@ -101,4 +101,8 @@ export class Habit extends BaseTimeEntity {
 
     return habit;
   }
+
+  update(request: Partial<Omit<Habit, 'user'>>) {
+    Object.assign(this, request);
+  }
 }
