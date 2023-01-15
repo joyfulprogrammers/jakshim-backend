@@ -39,7 +39,7 @@ export class HabitCreateRequest {
   targetCount: number;
 
   @ApiProperty({
-    example: '건강',
+    example: 'POSITIVE',
     description: '습관 타입',
   })
   @IsString()
