@@ -61,4 +61,27 @@ describe('HabitService', () => {
     const habit = await orm.em.find(Habit, {});
     expect(habit).not.toBeFalsy();
   });
+
+  it('필수 값을 입력하지 않으면 에러를 반환합니다.', async () => {
+    // given
+    const request = plainToInstance(HabitCreateRequest, {
+      themeColor: '#000000',
+      fontColor: '#ffffff',
+      iconImageUrl: 'https://test.com',
+      targetCount: 1,
+      type: 'POSITIVE',
+      isImportant: true,
+      cycleMonday: true,
+      cycleTuesday: true,
+      cycleWednesday: true,
+      cycleThursday: true,
+      cycleFriday: true,
+      cycleSaturday: true,
+      cycleSunday: true,
+      cycleWeek: false,
+    });
+
+    // when
+    await expect(habitService.createHabit(request)).rejects.toThrowError();
+  });
 });
