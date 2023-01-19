@@ -54,5 +54,7 @@ export class HabitService {
     await this.transactionService.transactional(async (manager) => {
       await manager.persistAndFlush(habit);
     });
+
+    return habit;
   }
 }

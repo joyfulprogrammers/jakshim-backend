@@ -21,6 +21,7 @@ import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
+import { HabitUpdateResponse } from './dto/HabitUpdateResponse';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -72,15 +73,16 @@ export class HabitController {
   @ApiResponse({
     status: 200,
     description: '습관 수정 성공',
+    type: HabitUpdateResponse,
   })
   async updateHabit(
     @Param('id', ParseIntPipe) id: number,
     @Body() request: HabitUpdateRequest,
   ) {
     try {
-      await this.habitService.update(id, request);
+      const habit = await this.habitService.update(id, request);
 
-      return ResponseEntity.OK();
+      return ResponseEntity.OK_WITH(new HabitUpdateResponse(habit));
     } catch (error) {
       // TODO: logger 로직 필요
       console.error(error);
