@@ -13,7 +13,6 @@ import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
-  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
@@ -26,6 +25,7 @@ import { HabitUpdateResponse } from './dto/HabitUpdateResponse';
 import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
+import { HabitCreateResponse } from './dto/HabitCreateResponse';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -39,15 +39,12 @@ export class HabitController {
     summary: '습관 생성 API',
     description: '습관을 생성합니다.',
   })
-  @ApiResponse({
-    status: 200,
-    description: '습관 생성 성공',
-  })
+  @ApiOkResponseBy(HabitCreateResponse)
   async createHabit(@Body() request: HabitCreateRequest, @Session() user) {
     try {
-      const newHabit = await this.habitService.createHabit(request, user.id);
+      const habit = await this.habitService.createHabit(request, user.id);
 
-      return ResponseEntity.OK_WITH(newHabit.id);
+      return ResponseEntity.OK_WITH(new HabitCreateResponse(habit));
     } catch (error) {
       let errorCode: ResponseStatus;
 
