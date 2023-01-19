@@ -22,6 +22,7 @@ import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
 import { HabitUpdateResponse } from './dto/HabitUpdateResponse';
+import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -70,11 +71,7 @@ export class HabitController {
     description: '습관 id',
     example: 2,
   })
-  @ApiResponse({
-    status: 200,
-    description: '습관 수정 성공',
-    type: HabitUpdateResponse,
-  })
+  @ApiOkResponseBy(HabitUpdateResponse)
   async updateHabit(
     @Param('id', ParseIntPipe) id: number,
     @Body() request: HabitUpdateRequest,
