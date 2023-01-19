@@ -17,9 +17,12 @@ export class HabitService {
     private readonly habitQueryRepository: HabitQueryRepository,
   ) {}
 
-  async createHabit(request: HabitCreateRequest): Promise<Habit> {
+  async createHabit(
+    request: HabitCreateRequest,
+    userId: number,
+  ): Promise<Habit> {
     const newHabit = Habit.create(
-      1,
+      userId,
       request.name,
       request.type,
       request.targetCount,
@@ -44,14 +47,18 @@ export class HabitService {
     return newHabit;
   }
 
-  async update(id: number, request: HabitUpdateRequest) {
+  async update(id: number, request: HabitUpdateRequest, userId: number) {
     const habit = await this.habitQueryRepository.findOneByHabitAndUser(
       id,
-      request.userId,
+      userId,
     );
 
     if (!habit) {
       throw new NotFoundException('습관이 존재하지 않습니다.');
+    }
+
+    if (habit.user?.id !== userId) {
+      throw new ForbiddenException('권한이 없습니다');
     }
 
     habit.update(request);

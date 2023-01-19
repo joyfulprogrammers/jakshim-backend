@@ -43,9 +43,9 @@ export class HabitController {
     status: 200,
     description: '습관 생성 성공',
   })
-  async createHabit(@Body() request: HabitCreateRequest) {
+  async createHabit(@Body() request: HabitCreateRequest, @Session() user) {
     try {
-      const newHabit = await this.habitService.createHabit(request);
+      const newHabit = await this.habitService.createHabit(request, user.id);
 
       return ResponseEntity.OK_WITH(newHabit.id);
     } catch (error) {
@@ -78,9 +78,10 @@ export class HabitController {
   async updateHabit(
     @Param('id', ParseIntPipe) id: number,
     @Body() request: HabitUpdateRequest,
+    @Session() user,
   ) {
     try {
-      const habit = await this.habitService.update(id, request);
+      const habit = await this.habitService.update(id, request, user.id);
 
       return ResponseEntity.OK_WITH(new HabitUpdateResponse(habit));
     } catch (error) {
