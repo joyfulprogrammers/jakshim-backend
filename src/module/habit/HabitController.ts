@@ -35,12 +35,14 @@ export class HabitController {
     description: '습관을 생성합니다.',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: '습관 생성 성공',
   })
   async createHabit(@Body() request: HabitCreateRequest) {
     try {
-      await this.habitService.createHabit(request);
+      const newHabit = await this.habitService.createHabit(request);
+
+      return ResponseEntity.OK_WITH(newHabit.id);
     } catch (error) {
       let errorCode: ResponseStatus;
 
