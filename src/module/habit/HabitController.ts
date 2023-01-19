@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Param,
   ParseIntPipe,
   Patch,
@@ -23,6 +24,8 @@ import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
 import { HabitUpdateResponse } from './dto/HabitUpdateResponse';
 import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
+import { Session } from '../../decorator/Session';
+import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -80,6 +83,31 @@ export class HabitController {
       const habit = await this.habitService.update(id, request);
 
       return ResponseEntity.OK_WITH(new HabitUpdateResponse(habit));
+    } catch (error) {
+      // TODO: logger 로직 필요
+      console.error(error);
+
+      throw error;
+    }
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: '습관 수정 API',
+    description: '습관을 수정합니다.',
+  })
+  @ApiParam({
+    type: 'string', // codegen 을 위한 타입 변경
+    name: 'id',
+    description: '습관 id',
+    example: 2,
+  })
+  @ApiOkResponseBy(HabitUpdateResponse)
+  async deleteHabit(@Param('id', ParseIntPipe) id: number, @Session() user) {
+    try {
+      const habit = await this.habitService.delete(id, user.id);
+
+      return ResponseEntity.OK_WITH(new HabitDeleteResponse(habit));
     } catch (error) {
       // TODO: logger 로직 필요
       console.error(error);

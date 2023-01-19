@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
 import { TransactionService } from '../../entity/transaction/TransactionService';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { HabitQueryRepository } from './HabitQueryRepository';
+import { LocalDateTime } from '@js-joda/core';
 
 @Injectable()
 export class HabitService {
@@ -53,6 +58,28 @@ export class HabitService {
 
     await this.transactionService.transactional(async (manager) => {
       await manager.persistAndFlush(habit);
+    });
+
+    return habit;
+  }
+
+  async delete(id: number, userId: number, now = LocalDateTime.now()) {
+    const habit = await this.habitQueryRepository.findOneByHabitAndUser(
+      id,
+      userId,
+    );
+
+    if (!habit) {
+      throw new NotFoundException('습관이 존재하지 않습니다');
+    }
+
+    if (habit.user?.id !== userId) {
+      throw new ForbiddenException('권한이 없습니다');
+    }
+
+    await this.transactionService.transactional(async (manager) => {
+      habit.delete(now);
+      manager.persist(habit);
     });
 
     return habit;

@@ -8,6 +8,8 @@ import {
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
 import { HabitType } from './type/HabitType';
+import { LocalDateTime } from '@js-joda/core';
+import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 
 @Entity({ tableName: 'habits' })
 export class Habit extends BaseTimeEntity {
@@ -62,6 +64,9 @@ export class Habit extends BaseTimeEntity {
   @Property({ comment: '주기가 일주일인지 여부' })
   cycleWeek: boolean;
 
+  @Property({ type: LocalDateTimeType, comment: '삭제 시각' })
+  deletedAt?: LocalDateTime;
+
   static create(
     userId: number,
     name: string,
@@ -104,5 +109,9 @@ export class Habit extends BaseTimeEntity {
 
   update(request: Partial<Omit<Habit, 'user'>>) {
     Object.assign(this, request);
+  }
+
+  delete(now: LocalDateTime) {
+    this.deletedAt = now;
   }
 }
