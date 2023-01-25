@@ -41,7 +41,7 @@ export class AuthController {
     },
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: '로그인 성공',
   })
   async signIn(@Session() authSessionDto: AuthSessionDto) {
@@ -69,7 +69,7 @@ export class AuthController {
     description: '회원가입을 합니다.',
   })
   @ApiResponse({
-    status: 201,
+    status: 200,
     description: '회원가입 성공',
   })
   async signUp(
