@@ -55,7 +55,7 @@ describe('HabitService', () => {
     });
 
     // when
-    await habitService.createHabit(request);
+    await habitService.createHabit(request, 1);
 
     // then
     const habit = await orm.em.find(Habit, {});
@@ -82,6 +82,6 @@ describe('HabitService', () => {
     });
 
     // when
-    await expect(habitService.createHabit(request)).rejects.toThrowError();
+    await expect(habitService.createHabit(request, 1)).rejects.toThrowError();
   });
 });
