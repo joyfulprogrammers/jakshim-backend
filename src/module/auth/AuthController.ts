@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -15,11 +16,17 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
+import { UserService } from '../user/UserService';
+import { AuthCheckResponse } from './dto/AuthCheckResponse';
+import { ApiOkResponseBy } from 'src/libs/res/swagger/ApiOkResponseBy';
 
 @ApiTags('AUTH')
 @Controller('api/auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @UseGuards(AuthLocalGuard)
   @Post('/signin')
@@ -87,6 +94,34 @@ export class AuthController {
       } else {
         // eslint-disable-next-line no-console
         console.error(`관리자 회원가입 실패`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
+
+  @Get('/check')
+  @ApiOperation({
+    summary: '로그인한 체크 API',
+    description: '로그인한 유저가 있는지 체크하고 정보를 가져옵니다.',
+  })
+  @ApiOkResponseBy(AuthCheckResponse)
+  async check(@Session() user: AuthSessionDto) {
+    try {
+      const foundUser = await this.userService.find(user.id);
+
+      return ResponseEntity.OK_WITH<AuthCheckResponse>(
+        new AuthCheckResponse(foundUser),
+      );
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`관리자 로그인 실패`, error);
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 
