@@ -6,24 +6,24 @@
 
 ```mermaid
 erDiagram
-  users ||--o{ habits : has many
-  habits ||--o{ achievements : has many
+  users ||--o{ habits : OneToN
+  users ||--o{ achievements : OneToN
   users {
     number id
     string email
     string password
-    string(50) nickname
+    string50 nickname
     string created_at
     string updated_at
     string deleted_at
   }
-  habits ||--o{ achievements : has many
+  habits ||--o{ achievements : OneToN
   habits {
     number id
     number user_id
-    string(50) name
-    string(7) theme_color
-    string(7) font_color
+    string50 name
+    string7 theme_color
+    string7 font_color
     string icon_image_url
     number target_count
     enum type
