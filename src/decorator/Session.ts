@@ -11,7 +11,7 @@ export const Session = createParamDecorator(
   (_data, ctx: ExecutionContext): Session => {
     const request = ctx.switchToHttp().getRequest();
 
-    if (!request.session) {
+    if (!request.session || !request.session.passport) {
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
 

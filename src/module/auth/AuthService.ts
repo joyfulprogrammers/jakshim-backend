@@ -28,6 +28,14 @@ export class AuthService {
   }
 
   async signup(req: AuthSignUpRequest) {
+    const user = await this.userService.findByEmail(req.email);
+
+    if (user !== null) {
+      throw DomainException.Conflict({
+        message: '이미 가입된 이메일입니다.',
+      });
+    }
+
     await this.authRepository.save(req);
   }
 }
