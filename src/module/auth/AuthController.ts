@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -108,12 +109,18 @@ export class AuthController {
     description: '로그인한 유저가 있는지 체크하고 정보를 가져옵니다.',
   })
   @ApiOkResponseBy(AuthCheckResponse)
-  async check(@Session() user: AuthSessionDto) {
+  async check(@Req() request: any) {
     try {
+      if (!request.session || !request.session.passport) {
+        return ResponseEntity.OK_WITH<AuthCheckResponse>(
+          new AuthCheckResponse(false),
+        );
+      }
+      const user = request.session.passport.user;
       const foundUser = await this.userService.find(user.id);
 
       return ResponseEntity.OK_WITH<AuthCheckResponse>(
-        new AuthCheckResponse(foundUser),
+        new AuthCheckResponse(!!foundUser),
       );
     } catch (error) {
       let errorCode: ResponseStatus;
