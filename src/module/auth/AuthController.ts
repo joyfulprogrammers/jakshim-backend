@@ -129,7 +129,7 @@ export class AuthController {
         errorCode = ResponseStatus.BAD_REQUEST;
       } else {
         // eslint-disable-next-line no-console
-        console.error(`관리자 로그인 실패`, error);
+        console.error(`로그인 체크 실패`, error);
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 
