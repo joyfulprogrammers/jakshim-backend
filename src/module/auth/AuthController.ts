@@ -136,4 +136,37 @@ export class AuthController {
       return ResponseEntity.ERROR_WITH(error.message, errorCode);
     }
   }
+
+  @Post('/logout')
+  @ApiOperation({
+    summary: '로그아웃 API',
+    description: '로그아웃을 합니다.',
+  })
+  async logout(@Req() request: any) {
+    try {
+      const responsePromise = new Promise((resolve, reject) => {
+        request.logout(function logoutCallback(error) {
+          if (error) {
+            reject(new Error('로그아웃 실패'));
+          }
+
+          resolve(ResponseEntity.OK());
+        });
+      });
+
+      return await responsePromise;
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`로그아웃 실패`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
 }
