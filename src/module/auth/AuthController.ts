@@ -6,19 +6,20 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { AuthSessionDto } from './dto/AuthSessionDto';
 import { AuthService } from './AuthService';
 import { Session } from '../../decorator/Session';
 import { AuthSignUpRequest } from './dto/AuthSignupRequest';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
 import { UserService } from '../user/UserService';
 import { AuthCheckResponse } from './dto/AuthCheckResponse';
-import { ApiOkResponseBy } from 'src/libs/res/swagger/ApiOkResponseBy';
+import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 
 @ApiTags('AUTH')
 @Controller('api/auth')
