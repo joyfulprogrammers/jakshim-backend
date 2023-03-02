@@ -11,6 +11,7 @@ import { BadParameterExceptionFilter } from './exceptions/BadParameterExceptionF
 import { HttpExceptionFilter } from './exceptions/HttpExceptionFilter';
 import { synchronizeEntities } from './libs/synchronizeEntities';
 import { CustomValidationError } from './exceptions/CustomValidationError';
+import { SessionName } from './constant/SessionConstant';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -47,7 +48,7 @@ async function bootstrap() {
     .setTitle('작심 API')
     .setDescription('작심 API 문서')
     .setVersion('1.0')
-    .addCookieAuth('connect.jakshim.sid')
+    .addCookieAuth(SessionName)
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);

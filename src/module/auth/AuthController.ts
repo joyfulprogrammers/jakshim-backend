@@ -105,7 +105,7 @@ export class AuthController {
 
   @Get('/check')
   @ApiOperation({
-    summary: '로그인한 체크 API',
+    summary: '로그인 체크 API',
     description: '로그인한 유저가 있는지 체크하고 정보를 가져옵니다.',
   })
   @ApiOkResponseBy(AuthCheckResponse)
