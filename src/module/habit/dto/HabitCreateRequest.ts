@@ -1,3 +1,4 @@
+import { LocalDateTime } from '@js-joda/core';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
@@ -15,6 +16,25 @@ export class HabitCreateRequest {
   })
   @IsNumber()
   targetCount: number;
+
+  @ApiProperty({
+    example: new Date(),
+    description: '습관 시작일',
+  })
+  startedAt: LocalDateTime;
+
+  @ApiProperty({
+    example: new Date(),
+    description: '습관 종료일',
+  })
+  endedAt: LocalDateTime;
+
+  @ApiProperty({
+    example: true,
+    description: '하루 종일 달성 가능 여부',
+  })
+  @IsBoolean()
+  isAllDay: boolean;
 
   @ApiProperty({
     example: true,

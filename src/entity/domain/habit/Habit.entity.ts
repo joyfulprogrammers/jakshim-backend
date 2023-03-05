@@ -21,6 +21,15 @@ export class Habit extends BaseTimeEntity {
   @Property({ comment: '습관 달성 기준 횟수' })
   targetCount: number;
 
+  @Property({ comment: '습관 시작 시간' })
+  startedAt?: LocalDateTime;
+
+  @Property({ comment: '습관 종료 시간' })
+  endedAt?: LocalDateTime;
+
+  @Property({ comment: '하루 종일 달성 가능한 습관 여부' })
+  isAllDay: boolean;
+
   @Property({ comment: '주기에 월요일 포함 여부' })
   cycleMonday: boolean;
 
@@ -52,6 +61,9 @@ export class Habit extends BaseTimeEntity {
     userId: number,
     name: string,
     targetCount: number,
+    startedAt: LocalDateTime,
+    endedAt: LocalDateTime,
+    isAllDay: boolean,
     cycleMonday: boolean,
     cycleTuesday: boolean,
     cycleWednesday: boolean,
@@ -63,6 +75,9 @@ export class Habit extends BaseTimeEntity {
   ) {
     const habit = new Habit();
     habit.name = name;
+    habit.startedAt = startedAt;
+    habit.endedAt = endedAt;
+    habit.isAllDay = isAllDay;
     habit.cycleMonday = cycleMonday;
     habit.cycleTuesday = cycleTuesday;
     habit.cycleWednesday = cycleWednesday;
