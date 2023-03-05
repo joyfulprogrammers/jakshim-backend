@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsEnum, IsInt, IsNumber, IsString } from 'class-validator';
-import { HabitType } from '../../../entity/domain/habit/type/HabitType';
+import { IsBoolean, IsInt, IsNumber, IsString } from 'class-validator';
 
 export class HabitUpdateRequest {
   @ApiProperty({
@@ -18,47 +17,11 @@ export class HabitUpdateRequest {
   name: string;
 
   @ApiProperty({
-    example: '#fff',
-    description: '습관 테마 색상',
-  })
-  @IsString()
-  themeColor: string;
-
-  @ApiProperty({
-    example: '#000',
-    description: '습관 폰트 색상',
-  })
-  @IsString()
-  fontColor: string;
-
-  @ApiProperty({
-    example: 'https://cdn.inflearn.com/public/main/profile/default_profile.png',
-    description: '습관 이미지 주소',
-  })
-  @IsString()
-  iconImageUrl: string;
-
-  @ApiProperty({
     example: 5,
     description: '습관 달성 조각 횟수',
   })
   @IsNumber()
   targetCount: number;
-
-  @ApiProperty({
-    example: 'POSITIVE',
-    description: '습관 타입',
-  })
-  @IsString()
-  @IsEnum(HabitType)
-  type: HabitType;
-
-  @ApiProperty({
-    example: true,
-    description: '중요 습관 여부',
-  })
-  @IsBoolean()
-  isImportant: boolean;
 
   @ApiProperty({
     example: true,

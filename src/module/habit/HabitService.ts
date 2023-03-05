@@ -24,9 +24,7 @@ export class HabitService {
     const newHabit = Habit.create(
       userId,
       request.name,
-      request.type,
       request.targetCount,
-      request.isImportant,
       request.cycleMonday,
       request.cycleTuesday,
       request.cycleWednesday,
@@ -35,9 +33,6 @@ export class HabitService {
       request.cycleSaturday,
       request.cycleSunday,
       request.cycleWeek,
-      request.themeColor,
-      request.fontColor,
-      request.iconImageUrl,
     );
 
     await this.transactionService.transactional(async (manager) => {

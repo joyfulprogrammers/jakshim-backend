@@ -7,7 +7,6 @@ import {
 } from '@mikro-orm/core';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
-import { HabitType } from './type/HabitType';
 import { LocalDateTime } from '@js-joda/core';
 import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 
@@ -19,26 +18,8 @@ export class Habit extends BaseTimeEntity {
   @Property({ comment: '습관 이름' })
   name: string;
 
-  @Property({ comment: '습관 테마 색상' })
-  themeColor?: string;
-
-  @Property({ comment: '습관 폰트 색상' })
-  fontColor?: string;
-
-  @Property({ comment: '습관 아이콘 이미지' })
-  iconImageUrl?: string;
-
   @Property({ comment: '습관 달성 기준 횟수' })
   targetCount: number;
-
-  @Property({ comment: '습관 타입' })
-  type: HabitType;
-
-  @Property({
-    comment:
-      '중요 습관이면, 달성 주기에 해당하는 날을 ‘달성한 날’로 체크하는 데 기준이 됨',
-  })
-  isImportant: boolean;
 
   @Property({ comment: '주기에 월요일 포함 여부' })
   cycleMonday: boolean;
@@ -70,9 +51,7 @@ export class Habit extends BaseTimeEntity {
   static create(
     userId: number,
     name: string,
-    type: HabitType,
     targetCount: number,
-    isImportant: boolean,
     cycleMonday: boolean,
     cycleTuesday: boolean,
     cycleWednesday: boolean,
@@ -81,14 +60,9 @@ export class Habit extends BaseTimeEntity {
     cycleSaturday: boolean,
     cycleSunday: boolean,
     cycleWeek: boolean,
-    themeColor?: string,
-    fontColor?: string,
-    iconImageUrl?: string,
   ) {
     const habit = new Habit();
     habit.name = name;
-    habit.type = type;
-    habit.isImportant = isImportant;
     habit.cycleMonday = cycleMonday;
     habit.cycleTuesday = cycleTuesday;
     habit.cycleWednesday = cycleWednesday;
@@ -97,9 +71,6 @@ export class Habit extends BaseTimeEntity {
     habit.cycleSaturday = cycleSaturday;
     habit.cycleSunday = cycleSunday;
     habit.cycleWeek = cycleWeek;
-    habit.themeColor = themeColor;
-    habit.fontColor = fontColor;
-    habit.iconImageUrl = iconImageUrl;
     habit.targetCount = targetCount;
 
     habit.user = Reference.createFromPK(User, userId);
