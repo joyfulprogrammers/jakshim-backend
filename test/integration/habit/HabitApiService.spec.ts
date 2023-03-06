@@ -31,11 +31,11 @@ describe('HabitService', () => {
     void orm.close(true);
   });
 
-  beforeEach(() => {
-    void Promise.all([orm.getSchemaGenerator().clearDatabase()]);
+  beforeEach(async () => {
+    await Promise.all([orm.getSchemaGenerator().clearDatabase()]);
   });
 
-  it.skip('습관을 정상적으로 생성합니다.', async () => {
+  it('습관을 정상적으로 생성합니다.', async () => {
     // given
     const request = plainToInstance(HabitCreateRequest, {
       name: 'test',
