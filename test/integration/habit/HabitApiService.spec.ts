@@ -78,7 +78,7 @@ describe('HabitService', () => {
     await expect(habitService.createHabit(request, 1)).rejects.toThrowError();
   });
 
-  it.skip('습관을 정상적으로 수정합니다.', async () => {
+  it('습관을 정상적으로 수정합니다.', async () => {
     // given
     const userId = 1;
     const createRequest = plainToInstance(HabitCreateRequest, {
@@ -98,12 +98,13 @@ describe('HabitService', () => {
     await habitService.createHabit(createRequest, userId);
     const foundCreatedHabit = await orm.em.find(Habit, {});
     const foundOldHabit = foundCreatedHabit[0];
-    console.log(foundCreatedHabit);
 
-    const updateRequest = plainToInstance(HabitUpdateRequest, {
+    const updateValues = {
       name: 'foo',
       targetCount: 2,
-    });
+      isAllDay: false,
+    };
+    const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
 
     // when
     await habitService.update(foundOldHabit.id, updateRequest, userId);
@@ -114,8 +115,7 @@ describe('HabitService', () => {
     expect(habit).toEqual(
       expect.objectContaining({
         ...instanceToPlain(foundOldHabit),
-        name: 'foo',
-        targetCount: 2,
+        ...updateValues,
       }),
     );
   });
