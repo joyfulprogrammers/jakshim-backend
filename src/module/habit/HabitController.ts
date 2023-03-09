@@ -37,7 +37,7 @@ export class HabitController {
   @ApiCookieAuth()
   @ApiOperation({
     summary: '습관 생성 API',
-    description: '습관을 생성합니다.',
+    description: '습관을 생성합니다. !! 하하',
   })
   @ApiOkResponseBy(HabitCreateResponse)
   async createHabit(@Body() request: HabitCreateRequest, @Session() user) {
