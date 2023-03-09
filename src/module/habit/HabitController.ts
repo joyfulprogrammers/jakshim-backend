@@ -56,6 +56,8 @@ export class HabitController {
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 
+      console.info('메롱');
+
       return ResponseEntity.ERROR_WITH(error.message, errorCode);
     }
   }
