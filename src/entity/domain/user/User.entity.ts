@@ -1,7 +1,7 @@
 import { Entity, Property } from '@mikro-orm/core';
 import { PasswordUtil } from '../../../module/auth/util/PasswordUtil';
 import { BaseTimeEntity } from '../BaseTimeEntity';
-import { DomainException } from '../../../libs/exception/DomainException';
+import { NotFoundException } from '@nestjs/common';
 
 @Entity({ tableName: 'users' })
 export class User extends BaseTimeEntity {
@@ -31,7 +31,7 @@ export class User extends BaseTimeEntity {
     const isMatch = await PasswordUtil.match(password, this.password);
 
     if (!isMatch) {
-      throw DomainException.NotFound({
+      throw new NotFoundException({
         message: '이메일 또는 비밀번호를 확인해주세요',
       });
     }
