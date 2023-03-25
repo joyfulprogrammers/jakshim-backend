@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   ParseIntPipe,
   Patch,
@@ -26,12 +27,40 @@ import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
+import { HabitFindAllResponse } from './dto/HabitFindAllResponse';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
 @Controller('api/habit')
 export class HabitController {
   constructor(private readonly habitService: HabitService) {}
+
+  @Get('/all')
+  @ApiCookieAuth()
+  @ApiOperation({
+    summary: '내 습관 조회 API',
+    description: '내 습관을 모두 조회합니다.',
+  })
+  @ApiOkResponseBy(HabitFindAllResponse)
+  async getMyHabits(@Session() user) {
+    try {
+      const habits = await this.habitService.findAllByUser(user.id);
+
+      return ResponseEntity.OK_WITH(new HabitFindAllResponse(habits));
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`습관 조회 실패`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
 
   @Post()
   @ApiCookieAuth()

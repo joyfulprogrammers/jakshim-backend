@@ -89,4 +89,8 @@ export class HabitService {
 
     return habit;
   }
+
+  async findAllByUser(userId: number) {
+    return this.habitQueryRepository.findAllByUser(userId);
+  }
 }

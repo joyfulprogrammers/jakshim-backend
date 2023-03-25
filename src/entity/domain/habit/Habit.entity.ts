@@ -7,7 +7,7 @@ import {
 } from '@mikro-orm/core';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
-import { LocalDateTime } from '@js-joda/core';
+import { LocalDateTime, nativeJs } from '@js-joda/core';
 import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 
 @Entity({ tableName: 'habits' })
@@ -21,10 +21,10 @@ export class Habit extends BaseTimeEntity {
   @Property({ comment: '습관 달성 기준 횟수' })
   targetCount: number;
 
-  @Property({ comment: '습관 시작 시간' })
+  @Property({ type: LocalDateTimeType, comment: '습관 시작 시간' })
   startedAt?: LocalDateTime;
 
-  @Property({ comment: '습관 종료 시간' })
+  @Property({ type: LocalDateTimeType, comment: '습관 종료 시간' })
   endedAt?: LocalDateTime;
 
   @Property({ comment: '하루 종일 달성 가능한 습관 여부' })
@@ -61,8 +61,8 @@ export class Habit extends BaseTimeEntity {
     userId: number,
     name: string,
     targetCount: number,
-    startedAt: LocalDateTime,
-    endedAt: LocalDateTime,
+    startedAt: Date | string | undefined,
+    endedAt: Date | string | undefined,
     isAllDay: boolean,
     cycleMonday: boolean,
     cycleTuesday: boolean,
@@ -75,8 +75,12 @@ export class Habit extends BaseTimeEntity {
   ) {
     const habit = new Habit();
     habit.name = name;
-    habit.startedAt = startedAt;
-    habit.endedAt = endedAt;
+    habit.startedAt = startedAt
+      ? LocalDateTime.from(nativeJs(new Date(startedAt)))
+      : undefined;
+    habit.endedAt = endedAt
+      ? LocalDateTime.from(nativeJs(new Date(endedAt)))
+      : undefined;
     habit.isAllDay = isAllDay;
     habit.cycleMonday = cycleMonday;
     habit.cycleTuesday = cycleTuesday;

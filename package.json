@@ -22,6 +22,7 @@
   },
   "dependencies": {
     "@js-joda/core": "^5.4.0",
+    "@js-joda/locale_ko": "^4.8.6",
     "@mikro-orm/core": "^5.5.3",
     "@mikro-orm/nestjs": "^5.1.2",
     "@mikro-orm/postgresql": "^5.5.3",
@@ -44,7 +45,8 @@
     "redis": "^4.3.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "ts-jenum": "^2.2.2"
   },
   "devDependencies": {
     "@mikro-orm/better-sqlite": "^5.5.3",

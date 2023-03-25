@@ -21,13 +21,13 @@ export class HabitCreateRequest {
     example: new Date(),
     description: '습관 시작일',
   })
-  startedAt: LocalDateTime;
+  startedAt?: Date | string;
 
   @ApiProperty({
     example: new Date(),
     description: '습관 종료일',
   })
-  endedAt: LocalDateTime;
+  endedAt?: Date | string;
 
   @ApiProperty({
     example: true,

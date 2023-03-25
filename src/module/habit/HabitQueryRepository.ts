@@ -16,4 +16,8 @@ export class HabitQueryRepository {
       user: { id: userId },
     });
   }
+
+  async findAllByUser(userId: number) {
+    return this.habitRepository.find({ user: { id: userId } });
+  }
 }

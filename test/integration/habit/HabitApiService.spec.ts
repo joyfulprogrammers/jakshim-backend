@@ -119,4 +119,64 @@ describe('HabitService', () => {
       }),
     );
   });
+
+  it('습관을 조회합니다.', async () => {
+    // given
+    const userId = 1;
+    const createRequest1 = plainToInstance(HabitCreateRequest, {
+      name: 'test',
+      targetCount: 1,
+      startedAt: new Date(),
+      isAllDay: true,
+      cycleMonday: true,
+      cycleTuesday: true,
+      cycleWednesday: true,
+      cycleThursday: true,
+      cycleFriday: true,
+      cycleSaturday: true,
+      cycleSunday: true,
+      cycleWeek: false,
+    });
+    await habitService.createHabit(createRequest1, userId);
+
+    // create second habit
+    const createRequest2 = plainToInstance(HabitCreateRequest, {
+      name: 'test2',
+      targetCount: 1,
+      startedAt: new Date(),
+      isAllDay: true,
+      cycleMonday: true,
+      cycleTuesday: true,
+      cycleWednesday: true,
+      cycleThursday: true,
+      cycleFriday: true,
+      cycleSaturday: true,
+      cycleSunday: true,
+      cycleWeek: false,
+    });
+    await habitService.createHabit(createRequest2, userId);
+
+    // create third habit
+    const createRequest3 = plainToInstance(HabitCreateRequest, {
+      name: 'test3',
+      targetCount: 1,
+      startedAt: new Date(),
+      isAllDay: true,
+      cycleMonday: true,
+      cycleTuesday: true,
+      cycleWednesday: true,
+      cycleThursday: true,
+      cycleFriday: true,
+      cycleSaturday: true,
+      cycleSunday: true,
+      cycleWeek: false,
+    });
+    await habitService.createHabit(createRequest3, userId);
+
+    // when
+    const habits = await habitService.findAllByUser(userId);
+
+    // then
+    expect(habits).toHaveLength(3);
+  });
 });

@@ -1,3 +1,4 @@
+import { DayOfWeekKRType } from '../type/DayOfWeekKRType';
 import {
   convert,
   DateTimeFormatter,
@@ -5,12 +6,21 @@ import {
   LocalDateTime,
   nativeJs,
 } from '@js-joda/core';
+import { Locale } from '@js-joda/locale_ko';
 
 export class DateTimeUtil {
   private static DATE_FORMATTER = DateTimeFormatter.ofPattern('yyyy-MM-dd');
   private static DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
     'yyyy-MM-dd HH:mm:ss',
   );
+
+  static format(localDate: LocalDate | LocalDateTime, pattern: string): string {
+    const dateString = localDate.format(
+      DateTimeFormatter.ofPattern(pattern).withLocale(Locale.KOREAN),
+    );
+
+    return dateString.replace('AM', '오전').replace('PM', '오후');
+  }
 
   static toString(localDate: LocalDate | LocalDateTime | null): string {
     if (!localDate) {
@@ -40,25 +50,23 @@ export class DateTimeUtil {
     return this.toString(this.toLocalDateTime(date));
   }
 
-  static toDate(localDate: LocalDate | LocalDateTime): Date | null {
-    if (!localDate) {
-      return null;
-    }
+  static toMilliseconds(localDate: LocalDate | LocalDateTime): number {
+    return DateTimeUtil.toDate(localDate).getTime();
+  }
 
+  static toUnixTime(localDate: LocalDate | LocalDateTime): number {
+    return Math.ceil(DateTimeUtil.toMilliseconds(localDate) / 1000);
+  }
+
+  static toDate(localDate: LocalDate | LocalDateTime): Date {
     return convert(localDate).toDate();
   }
 
-  static toLocalDate(date: Date): LocalDate | null {
-    if (!date) {
-      return null;
-    }
+  static toLocalDate(date: Date): LocalDate {
     return LocalDate.from(nativeJs(date));
   }
 
-  static toLocalDateTime(date: Date): LocalDateTime | null {
-    if (!date) {
-      return null;
-    }
+  static toLocalDateTime(date: Date): LocalDateTime {
     return LocalDateTime.from(nativeJs(date));
   }
 
@@ -115,5 +123,27 @@ export class DateTimeUtil {
     }
 
     return value;
+  }
+
+  static convertToKrDay(value: LocalDate): DayOfWeekKRType {
+    const dayOfWeek = value.dayOfWeek().value();
+
+    switch (dayOfWeek % 7) {
+      case 0:
+        return DayOfWeekKRType.SUNDAY;
+      case 1:
+        return DayOfWeekKRType.MONDAY;
+      case 2:
+        return DayOfWeekKRType.TUESDAY;
+      case 3:
+        return DayOfWeekKRType.WEDNESDAY;
+      case 4:
+        return DayOfWeekKRType.THURSDAY;
+      case 5:
+        return DayOfWeekKRType.FRIDAY;
+      case 6:
+      default:
+        return DayOfWeekKRType.SATURDAY;
+    }
   }
 }
