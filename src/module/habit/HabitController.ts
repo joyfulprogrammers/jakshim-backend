@@ -8,12 +8,14 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import {
   ApiCookieAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
@@ -28,6 +30,7 @@ import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
 import { HabitFindAllResponse } from './dto/HabitFindAllResponse';
+import { HabitFindResponse } from './dto/HabitFindResponse';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -46,7 +49,44 @@ export class HabitController {
     try {
       const habits = await this.habitService.findAllByUser(user.id);
 
-      return ResponseEntity.OK_WITH(new HabitFindAllResponse(habits));
+      return ResponseEntity.OK_WITH(
+        habits.map((habit) => new HabitFindResponse(habit)),
+      );
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`습관 조회 실패`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
+
+  @Get()
+  @ApiCookieAuth()
+  @ApiOperation({
+    summary: '습관 조회 API',
+    description: '습관을 조회합니다.',
+  })
+  @ApiQuery({
+    type: 'number',
+    name: 'id',
+    description: '습관 id',
+  })
+  @ApiOkResponseBy(HabitFindResponse)
+  async getHabit(@Query('id', ParseIntPipe) id: string, @Session() user) {
+    try {
+      const habit = await this.habitService.findOneByHabitAndUser(
+        Number(id),
+        user.id,
+      );
+
+      return ResponseEntity.OK_WITH(new HabitFindResponse(habit));
     } catch (error) {
       let errorCode: ResponseStatus;
 

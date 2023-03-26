@@ -90,6 +90,10 @@ export class HabitService {
     return habit;
   }
 
+  async findOneByHabitAndUser(id: number, userId: number) {
+    return this.habitQueryRepository.findOneByHabitAndUser(id, userId);
+  }
+
   async findAllByUser(userId: number) {
     return this.habitQueryRepository.findAllByUser(userId);
   }
