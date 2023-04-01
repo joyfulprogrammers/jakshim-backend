@@ -29,7 +29,6 @@ import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
-import { HabitFindAllResponse } from './dto/HabitFindAllResponse';
 import { HabitFindResponse } from './dto/HabitFindResponse';
 
 @ApiTags('HABIT')
@@ -44,7 +43,7 @@ export class HabitController {
     summary: '내 습관 조회 API',
     description: '내 습관을 모두 조회합니다.',
   })
-  @ApiOkResponseBy(HabitFindAllResponse)
+  @ApiOkResponseBy(HabitFindResponse)
   async getMyHabits(@Session() user) {
     try {
       const habits = await this.habitService.findAllByUser(user.id);

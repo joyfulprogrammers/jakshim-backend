@@ -1,4 +1,3 @@
-import { LocalDateTime } from '@js-joda/core';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsNumber, IsString } from 'class-validator';
 

@@ -3,6 +3,7 @@ import {
   IdentifiedReference,
   ManyToOne,
   Property,
+  Reference,
 } from '@mikro-orm/core';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { Habit } from '../habit/Habit.entity';
@@ -24,4 +25,24 @@ export class Achievement extends BaseTimeEntity {
 
   @Property({ comment: '습관 횟수' })
   count: number;
+
+  static create(
+    userId: number,
+    habitId: number,
+    targetCount: number,
+    count = 1,
+  ) {
+    const achievement = new Achievement();
+
+    achievement.user = Reference.createFromPK(User, userId);
+    achievement.habit = Reference.createFromPK(Habit, habitId);
+    achievement.targetCount = targetCount;
+    achievement.count = count;
+
+    return achievement;
+  }
+
+  update(request: { targetCount?: number; count?: number }) {
+    Object.assign(this, request);
+  }
 }
