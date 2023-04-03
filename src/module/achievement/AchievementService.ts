@@ -12,7 +12,7 @@ export class AchievementService {
     private readonly achievementQueryRepository: AchievementQueryRepository,
   ) {}
 
-  async achieve(userId: number, habitId: number, countToAdd: number) {
+  async achieve(userId: number, habitId: number, countToAdd = 1) {
     const todayAchievement =
       await this.achievementQueryRepository.findTodayAchievementByHabitId(
         habitId,
