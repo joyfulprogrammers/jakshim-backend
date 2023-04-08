@@ -1,7 +1,7 @@
 import { Habit } from 'src/entity/domain/habit/Habit.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
-import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
+import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
 
 export class HabitFindResponse {
   @Exclude() private readonly _habit: {
