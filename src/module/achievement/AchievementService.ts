@@ -12,6 +12,10 @@ export class AchievementService {
     private readonly achievementQueryRepository: AchievementQueryRepository,
   ) {}
 
+  // async findAllByHabitId(habitId: number) {
+
+  // }
+
   async achieve(userId: number, habitId: number, countToAdd = 1) {
     const todayAchievement =
       await this.achievementQueryRepository.findTodayAchievementByHabitId(

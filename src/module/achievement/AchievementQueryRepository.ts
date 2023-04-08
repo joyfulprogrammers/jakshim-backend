@@ -3,7 +3,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
-import { Habit } from 'src/entity/domain/habit/Habit.entity';
+import { Habit } from '../../entity/domain/habit/Habit.entity';
 import { Achievement } from '../../entity/domain/achievement/Achievement.entity';
 
 @Injectable()
@@ -28,4 +28,10 @@ export class AchievementQueryRepository {
       },
     });
   }
+
+  // async findAllByHabitId(habitId: number): Promise<Achievement[]> {
+  //   const habit = plainToInstance(Habit, { id: habitId });
+
+  //   return this.achievementRepository.findAll({ habit });
+  // }
 }
