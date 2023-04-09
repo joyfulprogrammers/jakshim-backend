@@ -86,6 +86,10 @@ export class DateTimeUtil {
     return LocalDateTime.of(9999, 12, 31, 23, 59, 59);
   }
 
+  static getTodayMin(): LocalDateTime {
+    return LocalDate.now().atStartOfDay();
+  }
+
   static toLocalDateBy(strDate: string): LocalDate | null {
     if (!strDate) {
       return null;

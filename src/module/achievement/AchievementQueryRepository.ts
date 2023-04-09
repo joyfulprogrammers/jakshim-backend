@@ -1,10 +1,10 @@
-import { LocalDate } from '@js-joda/core';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
 import { Achievement } from '../../entity/domain/achievement/Achievement.entity';
+import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 @Injectable()
 export class AchievementQueryRepository {
@@ -17,7 +17,7 @@ export class AchievementQueryRepository {
     habitId: number,
   ): Promise<Achievement | null> {
     const habit = plainToInstance(Habit, { id: habitId });
-    const today = LocalDate.now().atStartOfDay();
+    const today = DateTimeUtil.getTodayMin();
     const tommorow = today.plusDays(1);
 
     return this.achievementRepository.findOne({
