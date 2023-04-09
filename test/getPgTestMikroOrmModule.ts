@@ -1,5 +1,5 @@
-import { CustomMigrationGenerator } from '../src/config/CustomMigrationGenerator';
-import { CustomNamingStrategy } from '../src/config/CustomNamingStrategy';
+import { CustomMigrationGenerator } from 'src/config/CustomMigrationGenerator';
+import { CustomNamingStrategy } from 'src/config/CustomNamingStrategy';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 

@@ -28,10 +28,4 @@ export class AchievementQueryRepository {
       },
     });
   }
-
-  // async findAllByHabitId(habitId: number): Promise<Achievement[]> {
-  //   const habit = plainToInstance(Habit, { id: habitId });
-
-  //   return this.achievementRepository.findAll({ habit });
-  // }
 }

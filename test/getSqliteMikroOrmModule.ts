@@ -1,6 +1,6 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
-import { CustomNamingStrategy } from '../src/config/CustomNamingStrategy';
+import { CustomNamingStrategy } from 'src/config/CustomNamingStrategy';
 
 export function getSqliteMikroOrmModule() {
   return MikroOrmModule.forRoot({

@@ -2,19 +2,19 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { plainToInstance } from 'class-transformer';
 import { MikroORM, Reference } from '@mikro-orm/core';
 
-import { AchievementService } from '../../../src/module/achievement/AchievementService';
+import { AchievementService } from 'src/module/achievement/AchievementService';
 import { getSqliteMikroOrmModule } from '../../getSqliteMikroOrmModule';
-import { AchievementQueryRepository } from '../../../src/module/achievement/AchievementQueryRepository';
-import { TransactionService } from '../../../src/entity/transaction/TransactionService';
+import { AchievementQueryRepository } from 'src/module/achievement/AchievementQueryRepository';
+import { TransactionService } from 'src/entity/transaction/TransactionService';
 import { UserFactory } from '../../factory/UserFactory';
 import { HabitFactory } from '../../factory/HabitFactory';
-import { AchievementRequest } from '../../../src/module/achievement/dto/AchievementRequest';
-import { Achievement } from '../../../src/entity/domain/achievement/Achievement.entity';
-import { HabitApiModule } from '../../../src/module/habit/HabitApiModule';
-import { HabitService } from '../../../src/module/habit/HabitService';
-import { AchievementEntityModule } from '../../../src/entity/domain/achievement/AchievementEntityModule';
-import { HabitQueryRepository } from '../../../src/module/habit/HabitQueryRepository';
-import { HabitEntityModule } from '../../../src/entity/domain/habit/HabitEntityModule';
+import { AchievementRequest } from 'src/module/achievement/dto/AchievementRequest';
+import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
+import { HabitApiModule } from 'src/module/habit/HabitApiModule';
+import { HabitService } from 'src/module/habit/HabitService';
+import { AchievementEntityModule } from 'src/entity/domain/achievement/AchievementEntityModule';
+import { HabitQueryRepository } from 'src/module/habit/HabitQueryRepository';
+import { HabitEntityModule } from 'src/entity/domain/habit/HabitEntityModule';
 
 describe('AchievementService', () => {
   let orm: MikroORM;
@@ -56,20 +56,24 @@ describe('AchievementService', () => {
     await Promise.all([orm.getSchemaGenerator().clearDatabase()]);
   });
 
-  it('습관을 정상적으로 달성합니다.', async () => {
-    // given
-    const user = userFactory.makeOne();
-    const habit = await habitFactory.createOne({
-      user: Reference.create(user),
+  describe('습관을 정상적으로 달성합니다.', () => {
+    it('오늘 달성이 없다면 오늘 달성을 새로 만듭니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = await habitFactory.createOne({
+        user: Reference.create(user),
+      });
+      const request = plainToInstance(AchievementRequest, {
+        habitId: habit.id,
+      });
+
+      // when
+      await achievementService.achieve(user.id, request.habitId);
+
+      // then
+      const achievement = await orm.em.find(Achievement, {});
+      expect(achievement).toHaveLength(1);
+      expect(achievement[0]).toEqual(expect.objectContaining({ count: 1 }));
     });
-    const request = plainToInstance(AchievementRequest, { habitId: habit.id });
-
-    // when
-    await achievementService.achieve(user.id, request.habitId);
-
-    // then
-    const achievement = await orm.em.find(Achievement, {});
-    expect(achievement).toHaveLength(1);
-    expect(achievement[0]).toEqual(expect.objectContaining({ count: 1 }));
   });
 });
