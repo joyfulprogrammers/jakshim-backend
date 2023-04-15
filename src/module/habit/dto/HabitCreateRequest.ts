@@ -91,7 +91,9 @@ export class HabitCreateRequest {
   @IsBoolean()
   cycleWeek: boolean;
 
-  @ApiProperty({})
+  @ApiProperty({
+    example: [{ name: '유튜브 보기' }, { id: 2, name: '라면먹기' }],
+  })
   @IsArray()
   badhabits?: { id?: number; name: string }[];
 }
