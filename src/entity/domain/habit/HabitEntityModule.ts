@@ -1,9 +1,13 @@
 import { MikroOrmModule } from '@mikro-orm/nestjs';
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { Habit } from './Habit.entity';
+import { UserEntityModule } from '../user/UserEntityModule';
 
 @Module({
-  imports: [MikroOrmModule.forFeature([Habit])],
+  imports: [
+    forwardRef(() => UserEntityModule),
+    MikroOrmModule.forFeature([Habit]),
+  ],
   exports: [MikroOrmModule],
 })
 export class HabitEntityModule {}

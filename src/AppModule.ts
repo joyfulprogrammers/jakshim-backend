@@ -16,6 +16,8 @@ import { RedisModule } from './module/redis/RedisModule';
 import { SessionOptionModule } from './module/session/SessionOptionModule';
 import { UserModule } from './module/user/UserModule';
 import { HabitApiModule } from './module/habit/HabitApiModule';
+import { AchievementApiModule } from './module/achievement/AchievementApiModule';
+import { BadhabitApiModule } from './module/badhabit/BadhabitApiModule';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { HabitApiModule } from './module/habit/HabitApiModule';
     AuthModule,
     UserModule,
     HabitApiModule,
+    AchievementApiModule,
+    BadhabitApiModule,
   ],
   controllers: [],
   providers: [],
