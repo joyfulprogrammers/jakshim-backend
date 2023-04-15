@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class HabitCreateRequest {
   @ApiProperty({
@@ -90,4 +90,8 @@ export class HabitCreateRequest {
   })
   @IsBoolean()
   cycleWeek: boolean;
+
+  @ApiProperty({})
+  @IsArray()
+  badhabits?: { id?: number; name: string }[];
 }

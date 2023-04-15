@@ -1,3 +1,4 @@
+import { HabitBadhabit } from 'src/entity/domain/habitBadhabit/HabitBadhabit.entity';
 import { CustomMigrationGenerator } from './CustomMigrationGenerator';
 import { CustomNamingStrategy } from './CustomNamingStrategy';
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
@@ -13,8 +14,8 @@ const config: MikroOrmModuleOptions = {
   port: 5440,
   metadataProvider: TsMorphMetadataProvider,
   autoLoadEntities: true,
-  entities: ['../entity/domain'],
-  entitiesTs: ['../entity/domain'],
+  entities: ['../entity/domain', HabitBadhabit],
+  entitiesTs: ['../entity/domain', HabitBadhabit],
   namingStrategy: CustomNamingStrategy,
   allowGlobalContext: true, // 개발 환경이라면 true
   schemaGenerator: {

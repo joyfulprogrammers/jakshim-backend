@@ -9,6 +9,8 @@ import { HabitCreateRequest } from './dto/HabitCreateRequest';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { HabitQueryRepository } from './HabitQueryRepository';
 import { LocalDateTime } from '@js-joda/core';
+import { Badhabit } from 'src/entity/domain/badhabit/Badhabit.entity';
+import { HabitBadhabit } from 'src/entity/domain/habitBadhabit/HabitBadhabit.entity';
 
 @Injectable()
 export class HabitService {
@@ -37,9 +39,33 @@ export class HabitService {
       request.cycleSunday,
       request.cycleWeek,
     );
+    const hasBadhabits = request.badhabits?.length > 0;
+
+    const badhabitsHaveToBeCreated = hasBadhabits
+      ? request.badhabits
+          .filter((badhabit) => !badhabit.id)
+          .map((badhabit) => Badhabit.create(userId, badhabit.name))
+      : [];
+    const badhabitsAlreadyExist = hasBadhabits
+      ? request.badhabits.filter((badhabit) => !!badhabit.id)
+      : [];
 
     await this.transactionService.transactional(async (manager) => {
+      let badhabits = [];
+      if (hasBadhabits) {
+        badhabitsHaveToBeCreated.map((badhabit) => manager.persist(badhabit));
+        badhabits = [...badhabitsHaveToBeCreated, ...badhabitsAlreadyExist];
+      }
+
       await manager.persistAndFlush(newHabit);
+
+      if (hasBadhabits) {
+        badhabits.map((badhabit) => {
+          manager.persist(HabitBadhabit.create(newHabit.id, badhabit.id));
+        });
+
+        await manager.flush();
+      }
     });
 
     return newHabit;

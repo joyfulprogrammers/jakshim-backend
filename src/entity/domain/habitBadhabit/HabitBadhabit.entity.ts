@@ -5,21 +5,21 @@ import {
   Reference,
 } from '@mikro-orm/core';
 import { Habit } from '../habit/Habit.entity';
-import { User } from '../user/User.entity';
+import { Badhabit } from '../badhabit/Badhabit.entity';
 
 @Entity({ tableName: 'habit_badhabit' })
 export class HabitBadhabit {
-  @ManyToOne({ index: true })
+  @ManyToOne({ primary: true })
   habit: IdentifiedReference<Habit>;
 
-  @ManyToOne({ index: true })
-  user: IdentifiedReference<User>;
+  @ManyToOne({ primary: true })
+  badhabit: IdentifiedReference<Badhabit>;
 
-  static create(habitId: number, userId: number) {
+  static create(habitId: number, badhabitId: number) {
     const habitBadhabit = new HabitBadhabit();
 
     habitBadhabit.habit = Reference.createFromPK(Habit, habitId);
-    habitBadhabit.user = Reference.createFromPK(User, userId);
+    habitBadhabit.badhabit = Reference.createFromPK(Badhabit, badhabitId);
 
     return habitBadhabit;
   }
