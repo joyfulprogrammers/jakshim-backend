@@ -70,7 +70,7 @@ export class HabitController {
   @ApiCookieAuth()
   @ApiOperation({
     summary: '습관 조회 API',
-    description: '습관을 조회합니다.',
+    description: '습관 상세를 조회합니다.',
   })
   @ApiQuery({
     type: 'number',
@@ -78,12 +78,9 @@ export class HabitController {
     description: '습관 id',
   })
   @ApiOkResponseBy(HabitFindResponse)
-  async getHabit(@Query('id', ParseIntPipe) id: string, @Session() user) {
+  async getHabit(@Query('id', ParseIntPipe) id: number, @Session() user) {
     try {
-      const habit = await this.habitService.findOneByHabitAndUser(
-        Number(id),
-        user.id,
-      );
+      const habit = await this.habitService.findOneByHabitAndUser(id, user.id);
 
       return ResponseEntity.OK_WITH(new HabitFindResponse(habit));
     } catch (error) {
