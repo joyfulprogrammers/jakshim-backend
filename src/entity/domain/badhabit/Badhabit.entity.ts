@@ -1,17 +1,23 @@
 import {
+  Collection,
   Entity,
   IdentifiedReference,
   ManyToOne,
+  OneToMany,
   Property,
   Reference,
 } from '@mikro-orm/core';
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
+import { HabitBadhabit } from '../habitBadhabit/HabitBadhabit.entity';
 
 @Entity({ tableName: 'badhabits' })
 export class Badhabit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
+
+  @OneToMany({ entity: () => HabitBadhabit, mappedBy: 'badhabit' })
+  habitBadhabits = new Collection<HabitBadhabit>(this);
 
   @Property({ comment: '부정습관 이름' })
   name: string;

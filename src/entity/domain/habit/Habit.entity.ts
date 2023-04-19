@@ -1,7 +1,9 @@
 import {
+  Collection,
   Entity,
   IdentifiedReference,
   ManyToOne,
+  OneToMany,
   Property,
   Reference,
 } from '@mikro-orm/core';
@@ -10,11 +12,19 @@ import { User } from '../user/User.entity';
 import { LocalDateTime, LocalTime } from '@js-joda/core';
 import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 import { LocalTimeType } from '../../type/LocalTimeType';
+import { Achievement } from '../achievement/Achievement.entity';
+import { HabitBadhabit } from '../habitBadhabit/HabitBadhabit.entity';
 
 @Entity({ tableName: 'habits' })
 export class Habit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
+
+  @OneToMany({ entity: () => Achievement, mappedBy: 'habit' })
+  achievements = new Collection<Achievement>(this);
+
+  @OneToMany({ entity: () => HabitBadhabit, mappedBy: 'habit' })
+  habitBadhabits = new Collection<HabitBadhabit>(this);
 
   @Property({ comment: '습관 이름' })
   name: string;
