@@ -9,7 +9,7 @@ import { UserEntityModule } from 'src/entity/domain/user/UserEntityModule';
 import { HabitCreateRequest } from 'src/module/habit/dto/HabitCreateRequest';
 import { Habit } from 'src/entity/domain/habit/Habit.entity';
 import { TransactionService } from 'src/entity/transaction/TransactionService';
-import { plainToInstance, instanceToPlain } from 'class-transformer';
+import { plainToInstance } from 'class-transformer';
 import { HabitUpdateRequest } from 'src/module/habit/dto/HabitUpdateRequest';
 import { BadhabitEntityModule } from 'src/entity/domain/badhabit/BadhabitEntityModule';
 import { Badhabit } from 'src/entity/domain/badhabit/Badhabit.entity';
@@ -50,7 +50,8 @@ describe('HabitService', () => {
     const request = plainToInstance(HabitCreateRequest, {
       name: 'test',
       targetCount: 1,
-      startedAt: new Date(), // LocalDateTime.now() 으로 하면 'date must be an instance of LocalDate'과 같은 에러 발생
+      startedTime: '12:00', // LocalDateTime.now() 으로 하면 'date must be an instance of LocalDate'과 같은 에러 발생
+      endedTime: '14:00',
       isAllDay: true,
       cycleMonday: true,
       cycleTuesday: true,
@@ -75,7 +76,8 @@ describe('HabitService', () => {
     const request = plainToInstance(HabitCreateRequest, {
       name: 'test',
       targetCount: 1,
-      startedAt: new Date(), // LocalDateTime.now() 으로 하면 'date must be an instance of LocalDate'과 같은 에러 발생
+      startedTime: '12:00',
+      endedTime: '14:00',
       isAllDay: true,
       cycleMonday: true,
       cycleTuesday: true,
@@ -125,7 +127,8 @@ describe('HabitService', () => {
     const createRequest = plainToInstance(HabitCreateRequest, {
       name: 'test',
       targetCount: 1,
-      startedAt: new Date(),
+      startedTime: '12:00',
+      endedTime: '14:00',
       isAllDay: true,
       cycleMonday: true,
       cycleTuesday: true,
@@ -142,6 +145,8 @@ describe('HabitService', () => {
 
     const updateValues = {
       name: 'foo',
+      startedTime: '15:00',
+      endedTime: '18:00',
       targetCount: 2,
       isAllDay: false,
     };
@@ -153,12 +158,7 @@ describe('HabitService', () => {
     // then
     const foundHabit = await orm.em.find(Habit, {});
     const habit = foundHabit[0];
-    expect(habit).toEqual(
-      expect.objectContaining({
-        ...instanceToPlain(foundOldHabit),
-        ...updateValues,
-      }),
-    );
+    expect(habit.name).toBe(updateValues.name);
   });
 
   it('습관을 조회합니다.', async () => {

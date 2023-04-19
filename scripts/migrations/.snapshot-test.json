@@ -1,0 +1,587 @@
+{
+  "namespaces": [
+    "public"
+  ],
+  "name": "public",
+  "tables": [
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "사용자 이메일",
+          "mappedType": "string"
+        },
+        "password": {
+          "name": "password",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "사용자 비밀번호",
+          "mappedType": "string"
+        },
+        "nickname": {
+          "name": "nickname",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "사용자 닉네임",
+          "mappedType": "string"
+        }
+      },
+      "name": "users",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "pk_users_id",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {}
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "습관 이름",
+          "mappedType": "string"
+        },
+        "target_count": {
+          "name": "target_count",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "습관 달성 기준 횟수",
+          "mappedType": "integer"
+        },
+        "started_time": {
+          "name": "started_time",
+          "type": "time",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "습관 시작 시간",
+          "mappedType": "time"
+        },
+        "ended_time": {
+          "name": "ended_time",
+          "type": "time",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "comment": "습관 종료 시간",
+          "mappedType": "time"
+        },
+        "is_all_day": {
+          "name": "is_all_day",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "하루 종일 달성 가능한 습관 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_monday": {
+          "name": "cycle_monday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 월요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_tuesday": {
+          "name": "cycle_tuesday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 화요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_wednesday": {
+          "name": "cycle_wednesday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 수요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_thursday": {
+          "name": "cycle_thursday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 목요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_friday": {
+          "name": "cycle_friday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 금요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_saturday": {
+          "name": "cycle_saturday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 토요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_sunday": {
+          "name": "cycle_sunday",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기에 일요일 포함 여부",
+          "mappedType": "boolean"
+        },
+        "cycle_week": {
+          "name": "cycle_week",
+          "type": "boolean",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "주기가 일주일인지 여부",
+          "mappedType": "boolean"
+        },
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "comment": "삭제 시각",
+          "mappedType": "datetime"
+        }
+      },
+      "name": "habits",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "idx_habits_user_id",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "pk_habits_id",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "habits_user_id_foreign": {
+          "constraintName": "habits_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "public.habits",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "부정습관 이름",
+          "mappedType": "string"
+        }
+      },
+      "name": "badhabits",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "idx_badhabits_user_id",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "pk_badhabits_id",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "badhabits_user_id_foreign": {
+          "constraintName": "badhabits_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "public.badhabits",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "habit_id": {
+          "name": "habit_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "badhabit_id": {
+          "name": "badhabit_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        }
+      },
+      "name": "habit_badhabit",
+      "schema": "public",
+      "indexes": [
+        {
+          "keyName": "pk_habit_badhabit_habit_id_badhabit_id",
+          "columnNames": [
+            "habit_id",
+            "badhabit_id"
+          ],
+          "composite": true,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "habit_badhabit_habit_id_foreign": {
+          "constraintName": "habit_badhabit_habit_id_foreign",
+          "columnNames": [
+            "habit_id"
+          ],
+          "localTableName": "public.habit_badhabit",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.habits",
+          "updateRule": "cascade"
+        },
+        "habit_badhabit_badhabit_id_foreign": {
+          "constraintName": "habit_badhabit_badhabit_id_foreign",
+          "columnNames": [
+            "badhabit_id"
+          ],
+          "localTableName": "public.habit_badhabit",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.badhabits",
+          "updateRule": "cascade"
+        }
+      }
+    },
+    {
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "unsigned": true,
+          "autoincrement": true,
+          "primary": true,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "habit_id": {
+          "name": "habit_id",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "integer"
+        },
+        "target_count": {
+          "name": "target_count",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "습관 달성 기준 횟수. count가 targetCount에 도달하면 달성으로 처리",
+          "mappedType": "integer"
+        },
+        "count": {
+          "name": "count",
+          "type": "int",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "comment": "습관 횟수",
+          "mappedType": "integer"
+        }
+      },
+      "name": "achievements",
+      "schema": "public",
+      "indexes": [
+        {
+          "columnNames": [
+            "user_id"
+          ],
+          "composite": false,
+          "keyName": "idx_achievements_user_id",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "columnNames": [
+            "habit_id"
+          ],
+          "composite": false,
+          "keyName": "idx_achievements_habit_id",
+          "primary": false,
+          "unique": false
+        },
+        {
+          "keyName": "pk_achievements_id",
+          "columnNames": [
+            "id"
+          ],
+          "composite": false,
+          "primary": true,
+          "unique": true
+        }
+      ],
+      "checks": [],
+      "foreignKeys": {
+        "achievements_user_id_foreign": {
+          "constraintName": "achievements_user_id_foreign",
+          "columnNames": [
+            "user_id"
+          ],
+          "localTableName": "public.achievements",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.users",
+          "updateRule": "cascade"
+        },
+        "achievements_habit_id_foreign": {
+          "constraintName": "achievements_habit_id_foreign",
+          "columnNames": [
+            "habit_id"
+          ],
+          "localTableName": "public.achievements",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.habits",
+          "updateRule": "cascade"
+        }
+      }
+    }
+  ]
+}
