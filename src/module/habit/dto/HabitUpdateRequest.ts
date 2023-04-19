@@ -1,6 +1,7 @@
-import { LocalDateTime } from '@js-joda/core';
+import { LocalTime } from '@js-joda/core';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsInt, IsNumber, IsString } from 'class-validator';
+import { ToLocalTime } from '../../../decorator/ToLocalTime';
 
 export class HabitUpdateRequest {
   @ApiProperty({
@@ -25,16 +26,18 @@ export class HabitUpdateRequest {
   targetCount: number;
 
   @ApiProperty({
-    example: new Date(),
+    example: 'HH:mm',
     description: '습관 시작일',
   })
-  startedAt: LocalDateTime;
+  @ToLocalTime()
+  startedTime?: LocalTime;
 
   @ApiProperty({
-    example: new Date(),
+    example: 'HH:mm',
     description: '습관 종료일',
   })
-  endedAt: LocalDateTime;
+  @ToLocalTime()
+  endedTime?: LocalTime;
 
   @ApiProperty({
     example: true,
