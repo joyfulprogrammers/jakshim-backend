@@ -11,8 +11,8 @@ const config: MikroOrmModuleOptions = {
   dbName: 'test',
   port: 5440,
   metadataProvider: TsMorphMetadataProvider,
-  entities: ['../entity/domain'],
-  entitiesTs: ['../entity/domain'],
+  entities: ['src/entity/domain/**/*.entity.ts'],
+  entitiesTs: ['src/entity/domain/**/*.entity.ts'],
   autoLoadEntities: true,
   namingStrategy: CustomNamingStrategy,
   schemaGenerator: {
@@ -20,8 +20,8 @@ const config: MikroOrmModuleOptions = {
   },
   migrations: {
     disableForeignKeys: true,
-    path: '../../scripts/migrations',
-    pathTs: '../../scripts/migrations',
+    path: 'scripts/migrations',
+    pathTs: 'scripts/migrations',
     generator: CustomMigrationGenerator,
   },
 };
