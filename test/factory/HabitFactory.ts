@@ -8,7 +8,7 @@ export class HabitFactory extends Factory<Habit> {
     return Object.assign(new Habit(), {
       name: faker.random.word(),
       targetCount: faker.datatype.number({ min: 0 }),
-      startedAt: faker.date.past(),
+      startedTime: faker.date.past(),
       isAllDay: faker.datatype.boolean(),
       cycleMonday: faker.datatype.boolean(),
       cycleTuesday: faker.datatype.boolean(),

@@ -1,5 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import { LocalTime } from '@js-joda/core';
+import { ToLocalTime } from '../../../decorator/ToLocalTime';
+import { Habit } from '../../../entity/domain/habit/Habit.entity';
 
 export class HabitCreateRequest {
   @ApiProperty({
@@ -17,16 +20,18 @@ export class HabitCreateRequest {
   targetCount: number;
 
   @ApiProperty({
-    example: new Date(),
+    example: 'HH:mm',
     description: '습관 시작일',
   })
-  startedAt?: Date | string;
+  @ToLocalTime()
+  startedTime?: LocalTime;
 
   @ApiProperty({
-    example: new Date(),
+    example: 'HH:mm',
     description: '습관 종료일',
   })
-  endedAt?: Date | string;
+  @ToLocalTime()
+  endedTime?: LocalTime;
 
   @ApiProperty({
     example: true,
@@ -96,4 +101,23 @@ export class HabitCreateRequest {
   })
   @IsArray()
   badhabits?: { id?: number; name: string }[];
+
+  toEntity(userId: number): Habit {
+    return Habit.create(
+      userId,
+      this.name,
+      this.targetCount,
+      this.startedTime,
+      this.endedTime,
+      this.isAllDay,
+      this.cycleMonday,
+      this.cycleTuesday,
+      this.cycleWednesday,
+      this.cycleThursday,
+      this.cycleFriday,
+      this.cycleSaturday,
+      this.cycleSunday,
+      this.cycleWeek,
+    );
+  }
 }

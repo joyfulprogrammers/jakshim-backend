@@ -4,6 +4,7 @@ import {
   DateTimeFormatter,
   LocalDate,
   LocalDateTime,
+  LocalTime,
   nativeJs,
 } from '@js-joda/core';
 import { Locale } from '@js-joda/locale_ko';
@@ -13,6 +14,7 @@ export class DateTimeUtil {
   private static DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
     'yyyy-MM-dd HH:mm:ss',
   );
+  private static TIME_FORMATTER = DateTimeFormatter.ofPattern('HH:mm');
 
   static format(localDate: LocalDate | LocalDateTime, pattern: string): string {
     const dateString = localDate.format(
@@ -22,9 +24,15 @@ export class DateTimeUtil {
     return dateString.replace('AM', '오전').replace('PM', '오후');
   }
 
-  static toString(localDate: LocalDate | LocalDateTime | null): string {
+  static toString(
+    localDate: LocalDate | LocalDateTime | LocalTime | null,
+  ): string {
     if (!localDate) {
       return '';
+    }
+
+    if (localDate instanceof LocalTime) {
+      return localDate.format(this.TIME_FORMATTER);
     }
 
     if (localDate instanceof LocalDate) {
@@ -68,6 +76,14 @@ export class DateTimeUtil {
 
   static toLocalDateTime(date: Date): LocalDateTime {
     return LocalDateTime.from(nativeJs(date));
+  }
+
+  static toLocalTimeBy(strDate: string): LocalTime {
+    if (!strDate) {
+      return null;
+    }
+
+    return LocalTime.parse(strDate, DateTimeUtil.TIME_FORMATTER);
   }
 
   static getLocalDateMin(): LocalDate {

@@ -23,22 +23,8 @@ export class HabitService {
     request: HabitCreateRequest,
     userId: number,
   ): Promise<Habit> {
-    const newHabit = Habit.create(
-      userId,
-      request.name,
-      request.targetCount,
-      request.startedAt,
-      request.endedAt,
-      request.isAllDay,
-      request.cycleMonday,
-      request.cycleTuesday,
-      request.cycleWednesday,
-      request.cycleThursday,
-      request.cycleFriday,
-      request.cycleSaturday,
-      request.cycleSunday,
-      request.cycleWeek,
-    );
+    const newHabit = request.toEntity(userId);
+
     const hasBadhabits = request.badhabits?.length > 0;
 
     const badhabitsHaveToBeCreated = hasBadhabits
