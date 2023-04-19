@@ -142,27 +142,25 @@
           "comment": "습관 달성 기준 횟수",
           "mappedType": "integer"
         },
-        "started_at": {
-          "name": "started_at",
-          "type": "timestamptz",
+        "started_time": {
+          "name": "started_time",
+          "type": "time",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
           "comment": "습관 시작 시간",
-          "mappedType": "datetime"
+          "mappedType": "time"
         },
-        "ended_at": {
-          "name": "ended_at",
-          "type": "timestamptz",
+        "ended_time": {
+          "name": "ended_time",
+          "type": "time",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": true,
-          "length": 6,
           "comment": "습관 종료 시간",
-          "mappedType": "datetime"
+          "mappedType": "time"
         },
         "is_all_day": {
           "name": "is_all_day",
