@@ -19,7 +19,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migration": "mikro-orm migration:create"
+    "migration": "mikro-orm migration:create",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@js-joda/core": "^5.4.0",
@@ -72,7 +73,9 @@
     "eslint-plugin-jest-formatting": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^8.0.0",
     "jest": "28.1.2",
+    "lint-staged": "^13.2.1",
     "prettier": "^2.3.2",
     "source-map-support": "^0.5.20",
     "sql-formatter": "^11.0.2",
@@ -109,5 +112,8 @@
     "configPaths": [
       "./src/config/mikro-orm.cli-config.ts"
     ]
+  },
+  "lint-staged": {
+    "*.ts": "eslint --fix"
   }
 }
