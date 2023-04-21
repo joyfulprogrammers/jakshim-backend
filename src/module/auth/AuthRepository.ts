@@ -2,7 +2,7 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { User } from '../../entity/domain/user/User.entity';
-import { AuthSignUpRequest } from './dto/AuthSignupRequest';
+import { AuthSignUpRequest } from './dto/AuthSignUpRequest';
 
 @Injectable()
 export class AuthRepository {

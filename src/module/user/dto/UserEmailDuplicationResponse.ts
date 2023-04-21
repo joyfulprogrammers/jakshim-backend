@@ -3,8 +3,9 @@ import { Exclude, Expose } from 'class-transformer';
 import { User } from '../../../entity/domain/user/User.entity';
 
 export class UserEmailDuplicationResponse {
-  @Exclude() private readonly _user: User;
-  constructor(user: User) {
+  @Exclude() private readonly _user: User | null;
+
+  constructor(user: User | null) {
     this._user = user;
   }
 

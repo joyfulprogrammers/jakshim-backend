@@ -7,7 +7,7 @@ import { User } from '../../entity/domain/user/User.entity';
 import { UserService } from '../user/UserService';
 import { AuthRepository } from './AuthRepository';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
-import { AuthSignUpRequest } from './dto/AuthSignupRequest';
+import { AuthSignUpRequest } from './dto/AuthSignUpRequest';
 
 @Injectable()
 export class AuthService {
