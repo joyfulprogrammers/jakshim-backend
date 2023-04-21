@@ -14,13 +14,13 @@ import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { AuthSessionDto } from './dto/AuthSessionDto';
 import { AuthService } from './AuthService';
 import { Session } from '../../decorator/Session';
-import { AuthSignUpRequest } from './dto/AuthSignupRequest';
 import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
 import { UserService } from '../user/UserService';
 import { AuthCheckResponse } from './dto/AuthCheckResponse';
 import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
+import { AuthSignUpRequest } from './dto/AuthSignUpRequest';
 
 @ApiTags('AUTH')
 @Controller('api/auth')
@@ -145,7 +145,7 @@ export class AuthController {
   async logout(@Req() request: any) {
     try {
       const responsePromise = new Promise((resolve, reject) => {
-        request.logout(function logoutCallback(error) {
+        request.logout(function logoutCallback(error: Error) {
           if (error) {
             reject(new Error('로그아웃 실패'));
           }

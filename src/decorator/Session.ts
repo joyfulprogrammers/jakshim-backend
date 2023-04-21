@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AuthSessionDto } from '../module/auth/dto/AuthSessionDto';
 
 type Session = any;
 
@@ -15,8 +14,6 @@ export const Session = createParamDecorator(
       throw new UnauthorizedException('로그인이 필요합니다.');
     }
 
-    const authSessionDto: AuthSessionDto = request.session.passport.user;
-
-    return authSessionDto;
+    return request.session.passport.user;
   },
 );

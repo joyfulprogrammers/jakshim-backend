@@ -12,6 +12,7 @@ import { Session } from '../../decorator/Session';
 import { AchievementRequest } from './dto/AchievementRequest';
 import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { ResponseStatus } from '../../libs/res/ResponseStatus';
+import { AuthSessionDto } from '../auth/dto/AuthSessionDto';
 
 @ApiTags('ACHIEVEMENT')
 @UseGuards(LoggedInGuard)
@@ -25,7 +26,10 @@ export class AchievementController {
     summary: '습관 달성 API',
     description: '습관을 달성합니다.',
   })
-  async achieve(@Body() request: AchievementRequest, @Session() user) {
+  async achieve(
+    @Body() request: AchievementRequest,
+    @Session() user: AuthSessionDto,
+  ) {
     try {
       await this.achievementService.achieve(user.id, request.habitId);
 
@@ -51,7 +55,10 @@ export class AchievementController {
     summary: '습관 달성 취소 API',
     description: '습관을 달성 취소합니다.',
   })
-  async unachieve(@Body() request: AchievementRequest, @Session() user) {
+  async unachieve(
+    @Body() request: AchievementRequest,
+    @Session() user: AuthSessionDto,
+  ) {
     try {
       await this.achievementService.achieve(user.id, request.habitId, -1);
 

@@ -40,7 +40,7 @@ export class SessionOptionModule {
     };
   }
 
-  generateSessionId(): { genid: (_req: Request) => void } {
+  generateSessionId(): { genid: (_req: Request) => string } {
     return {
       genid: (_req: Request) => nanoid(this._sessionIdLength),
     };

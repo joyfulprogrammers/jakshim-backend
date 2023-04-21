@@ -78,7 +78,7 @@ export class DateTimeUtil {
     return LocalDateTime.from(nativeJs(date));
   }
 
-  static toLocalTimeBy(strDate: string): LocalTime {
+  static toLocalTimeBy(strDate: string): LocalTime | null {
     if (!strDate) {
       return null;
     }
@@ -100,6 +100,14 @@ export class DateTimeUtil {
 
   static getLocalDateTimeMax(): LocalDateTime {
     return LocalDateTime.of(9999, 12, 31, 23, 59, 59);
+  }
+
+  static getLocalTimeMin(): LocalTime {
+    return LocalTime.of(0, 0);
+  }
+
+  static getLocalTimeMax(): LocalTime {
+    return LocalTime.of(23, 59);
   }
 
   static getTodayMin(): LocalDateTime {

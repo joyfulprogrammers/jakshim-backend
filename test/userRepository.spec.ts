@@ -6,7 +6,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MikroORM } from '@mikro-orm/core';
 
 describe.skip('', () => {
-  let userRepository: UserRepository;
   let orm: MikroORM;
 
   beforeAll(async () => {
@@ -17,7 +16,6 @@ describe.skip('', () => {
 
     orm = module.get(MikroORM);
     await orm.getSchemaGenerator().refreshDatabase();
-    userRepository = module.get(UserRepository);
   });
 
   afterAll(async () => orm.close(true));

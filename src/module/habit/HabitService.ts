@@ -9,8 +9,7 @@ import { HabitCreateRequest } from './dto/HabitCreateRequest';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { HabitQueryRepository } from './HabitQueryRepository';
 import { LocalDateTime } from '@js-joda/core';
-import { Badhabit } from 'src/entity/domain/badhabit/Badhabit.entity';
-import { HabitBadhabit } from 'src/entity/domain/habitBadhabit/HabitBadhabit.entity';
+import { HabitBadhabit } from '../../entity/domain/habitBadhabit/HabitBadhabit.entity';
 
 @Injectable()
 export class HabitService {
@@ -25,32 +24,28 @@ export class HabitService {
   ): Promise<Habit> {
     const newHabit = request.toEntity(userId);
 
-    const hasBadhabits = request.badhabits?.length > 0;
-
-    const badhabitsHaveToBeCreated = hasBadhabits
-      ? request.badhabits
-          .filter((badhabit) => !badhabit.id)
-          .map((badhabit) => Badhabit.create(userId, badhabit.name))
-      : [];
-    const badhabitsAlreadyExist = hasBadhabits
-      ? request.badhabits.filter((badhabit) => !!badhabit.id)
-      : [];
-
     await this.transactionService.transactional(async (manager) => {
-      let badhabits = [];
-      if (hasBadhabits) {
-        badhabitsHaveToBeCreated.map((badhabit) => manager.persist(badhabit));
-        badhabits = [...badhabitsHaveToBeCreated, ...badhabitsAlreadyExist];
-      }
-
       await manager.persistAndFlush(newHabit);
 
-      if (hasBadhabits) {
-        badhabits.map((badhabit) => {
-          manager.persist(HabitBadhabit.create(newHabit.id, badhabit.id));
-        });
+      if (!request.hasBadHabits) {
+        return;
+      }
 
-        await manager.flush();
+      const createBadHabits = request.toBadHabitEntities(userId);
+      await manager.persistAndFlush(createBadHabits);
+
+      manager.persist(
+        createBadHabits.map((badHabit) =>
+          HabitBadhabit.create(newHabit.id, badHabit.id),
+        ),
+      );
+
+      if (request.existedBadHabits.length) {
+        manager.persist(
+          request.existedBadHabits.map((badHabit) =>
+            HabitBadhabit.create(newHabit.id, badHabit.id!),
+          ),
+        );
       }
     });
 

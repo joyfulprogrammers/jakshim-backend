@@ -30,6 +30,7 @@ import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
 import { HabitFindResponse } from './dto/HabitFindResponse';
+import { AuthSessionDto } from '../auth/dto/AuthSessionDto';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -44,7 +45,7 @@ export class HabitController {
     description: '내 습관을 모두 조회합니다.',
   })
   @ApiOkResponseBy(HabitFindResponse)
-  async getMyHabits(@Session() user) {
+  async getMyHabits(@Session() user: AuthSessionDto) {
     try {
       const habits = await this.habitService.findAllByUser(user.id);
 
@@ -78,11 +79,14 @@ export class HabitController {
     description: '습관 id',
   })
   @ApiOkResponseBy(HabitFindResponse)
-  async getHabit(@Query('id', ParseIntPipe) id: number, @Session() user) {
+  async getHabit(
+    @Query('id', ParseIntPipe) id: number,
+    @Session() user: AuthSessionDto,
+  ) {
     try {
       const habit = await this.habitService.findOneByHabitAndUser(id, user.id);
 
-      return ResponseEntity.OK_WITH(new HabitFindResponse(habit));
+      return ResponseEntity.OK_WITH(new HabitFindResponse(habit!)); // TODO: habit이 없을 경우 처리
     } catch (error) {
       let errorCode: ResponseStatus;
 
@@ -105,7 +109,10 @@ export class HabitController {
     description: '습관을 생성합니다.',
   })
   @ApiOkResponseBy(HabitCreateResponse)
-  async createHabit(@Body() request: HabitCreateRequest, @Session() user) {
+  async createHabit(
+    @Body() request: HabitCreateRequest,
+    @Session() user: AuthSessionDto,
+  ) {
     try {
       const habit = await this.habitService.createHabit(request, user.id);
 
@@ -140,7 +147,7 @@ export class HabitController {
   async updateHabit(
     @Param('id', ParseIntPipe) id: number,
     @Body() request: HabitUpdateRequest,
-    @Session() user,
+    @Session() user: AuthSessionDto,
   ) {
     try {
       const habit = await this.habitService.update(id, request, user.id);
@@ -166,7 +173,10 @@ export class HabitController {
     example: 2,
   })
   @ApiOkResponseBy(HabitUpdateResponse)
-  async deleteHabit(@Param('id', ParseIntPipe) id: number, @Session() user) {
+  async deleteHabit(
+    @Param('id', ParseIntPipe) id: number,
+    @Session() user: AuthSessionDto,
+  ) {
     try {
       const habit = await this.habitService.delete(id, user.id);
 

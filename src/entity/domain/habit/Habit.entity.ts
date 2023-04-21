@@ -23,10 +23,10 @@ export class Habit extends BaseTimeEntity {
   targetCount: number;
 
   @Property({ type: LocalTimeType, comment: '습관 시작 시간' })
-  startedTime?: LocalTime;
+  startedTime: LocalTime;
 
   @Property({ type: LocalTimeType, comment: '습관 종료 시간' })
-  endedTime?: LocalTime;
+  endedTime: LocalTime;
 
   @Property({ comment: '하루 종일 달성 가능한 습관 여부' })
   isAllDay: boolean;
@@ -76,8 +76,6 @@ export class Habit extends BaseTimeEntity {
   ) {
     const habit = new Habit();
     habit.name = name;
-    habit.startedTime = startedTime;
-    habit.endedTime = endedTime;
     habit.isAllDay = isAllDay;
     habit.cycleMonday = cycleMonday;
     habit.cycleTuesday = cycleTuesday;
@@ -88,6 +86,8 @@ export class Habit extends BaseTimeEntity {
     habit.cycleSunday = cycleSunday;
     habit.cycleWeek = cycleWeek;
     habit.targetCount = targetCount;
+    habit.startedTime = startedTime;
+    habit.endedTime = endedTime;
 
     habit.user = Reference.createFromPK(User, userId);
 

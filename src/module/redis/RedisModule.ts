@@ -1,14 +1,13 @@
 import { DynamicModule } from '@nestjs/common';
-import * as Redis from 'redis';
 import { SessionConstant } from '../../constant/SessionConstant';
+import { Redis } from 'ioredis';
 
 export class RedisModule {
   static register(host: string, port: number): DynamicModule {
-    const redisClient = Redis.createClient({
-      legacyMode: true,
-      url: `redis://${host}:${port}`,
+    const redisClient = new Redis({
+      host,
+      port,
     });
-    void redisClient.connect();
 
     return {
       module: RedisModule,
