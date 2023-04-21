@@ -17,5 +17,5 @@ export abstract class BaseTimeEntity {
     onCreate: () => LocalDateTime.now(),
     onUpdate: () => LocalDateTime.now(),
   })
-  readonly updatedAt?: LocalDateTime;
+  readonly updatedAt: LocalDateTime;
 }

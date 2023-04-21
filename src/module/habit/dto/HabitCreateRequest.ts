@@ -1,8 +1,16 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsBoolean, IsNumber, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 import { LocalTime } from '@js-joda/core';
 import { ToLocalTime } from '../../../decorator/ToLocalTime';
 import { Habit } from '../../../entity/domain/habit/Habit.entity';
+import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
 
 export class HabitCreateRequest {
   @ApiProperty({
@@ -23,15 +31,19 @@ export class HabitCreateRequest {
     example: 'HH:mm',
     description: '습관 시작일',
   })
+  @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
+  @IsNotEmpty()
   @ToLocalTime()
-  startedTime?: LocalTime;
+  startedTime: LocalTime;
 
   @ApiProperty({
     example: 'HH:mm',
     description: '습관 종료일',
   })
+  @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
+  @IsNotEmpty()
   @ToLocalTime()
-  endedTime?: LocalTime;
+  endedTime: LocalTime;
 
   @ApiProperty({
     example: true,
@@ -103,6 +115,8 @@ export class HabitCreateRequest {
   badhabits?: { id?: number; name: string }[];
 
   toEntity(userId: number): Habit {
+    this.setAllDayTime();
+
     return Habit.create(
       userId,
       this.name,
@@ -119,5 +133,12 @@ export class HabitCreateRequest {
       this.cycleSunday,
       this.cycleWeek,
     );
+  }
+
+  setAllDayTime(): void {
+    if (this.isAllDay) {
+      this.startedTime = DateTimeUtil.getLocalTimeMin();
+      this.endedTime = DateTimeUtil.getLocalTimeMax();
+    }
   }
 }
