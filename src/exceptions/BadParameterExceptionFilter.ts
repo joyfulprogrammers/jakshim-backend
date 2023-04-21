@@ -18,9 +18,8 @@ export class BadParameterExceptionFilter implements ExceptionFilter {
     const context = host.switchToHttp();
     const response = context.getResponse<Response>();
     const responseBody = exception.response;
-    const errorData = responseBody.message.map((validationError) =>
-      this.getCustomValidationError(validationError),
-    );
+
+    const isValidationError = responseBody instanceof ValidationError;
 
     response
       .status(HttpStatus.OK)
@@ -29,7 +28,9 @@ export class BadParameterExceptionFilter implements ExceptionFilter {
           ResponseEntity.ERROR_WITH_DATA<CustomValidationError[]>(
             ErrorResponseStatus.BAD_PARAMETER.message,
             ErrorResponseStatus.BAD_PARAMETER.code,
-            errorData,
+            isValidationError
+              ? [this.getCustomValidationError(responseBody)]
+              : (responseBody.message as CustomValidationError[]),
           ),
         ),
       );
