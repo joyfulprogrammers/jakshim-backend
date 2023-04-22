@@ -138,11 +138,9 @@ describe('HabitService', () => {
   it('습관을 정상적으로 수정합니다.', async () => {
     // given
     const user = userFactory.makeOne();
-    console.log('1');
     const habit = await habitFactory.createOne({
       user: Reference.create(user),
     });
-    console.log('2');
 
     const updateValues: Partial<Habit> = {
       name: 'foo',
@@ -152,6 +150,8 @@ describe('HabitService', () => {
       isAllDay: false,
     };
     const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
+
+    console.log(habit, user);
 
     // when
     await habitService.update(habit.id, updateRequest, user.id);

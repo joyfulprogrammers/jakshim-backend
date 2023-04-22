@@ -62,6 +62,7 @@ export class HabitService {
       throw new NotFoundException('습관이 존재하지 않습니다.');
     }
 
+    console.log(habit, userId);
     if (habit.user?.id !== userId) {
       throw new ForbiddenException('권한이 없습니다');
     }
