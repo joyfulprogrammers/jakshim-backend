@@ -21,10 +21,10 @@ export class Habit extends BaseTimeEntity {
   user: IdentifiedReference<User>;
 
   @OneToMany({ entity: () => Achievement, mappedBy: 'habit' })
-  achievement?: Achievement[];
+  achievement?: Collection<Achievement>;
 
   @OneToMany({ entity: () => HabitBadhabit, mappedBy: 'habit' })
-  habitBadhabit?: HabitBadhabit[];
+  habitBadhabit?: Collection<HabitBadhabit>;
 
   @Property({ comment: '습관 이름' })
   name: string;

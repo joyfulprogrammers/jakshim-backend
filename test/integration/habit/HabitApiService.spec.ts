@@ -17,15 +17,12 @@ import { HabitBadhabit } from 'src/entity/domain/habitBadhabit/HabitBadhabit.ent
 import { HabitBadhabitEntityModule } from 'src/entity/domain/habitBadhabit/HabitBadhabitEntityModule';
 import { HabitFactory } from 'test/factory/HabitFactory';
 import { UserFactory } from 'test/factory/UserFactory';
-import { HabitBadhabitFactory } from 'test/factory/HabitBadhabitFactory';
-import { BadhabitFactory } from 'test/factory/BadhabitFactory';
+import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 describe('HabitService', () => {
   let orm: MikroORM;
   let userFactory: UserFactory;
   let habitFactory: HabitFactory;
-  let habitBadhabitFactory: HabitBadhabitFactory;
-  let badhabitFactory: BadhabitFactory;
   let habitService: HabitService;
 
   beforeAll(async () => {
@@ -46,8 +43,6 @@ describe('HabitService', () => {
 
     userFactory = new UserFactory(em);
     habitFactory = new HabitFactory(em);
-    habitBadhabitFactory = new HabitBadhabitFactory(em);
-    badhabitFactory = new BadhabitFactory(em);
     habitService = module.get(HabitService);
   });
 
@@ -144,23 +139,26 @@ describe('HabitService', () => {
 
     const updateValues: Partial<Habit> = {
       name: 'foo',
-      startedTime: '15:00',
-      endedTime: '18:00',
+      startedTime: DateTimeUtil.toLocalTimeBy('15:00') || undefined,
+      endedTime: DateTimeUtil.toLocalTimeBy('18:00') || undefined,
       targetCount: 2,
       isAllDay: false,
     };
-    const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
+    const updateRequest = Object.assign(new HabitUpdateRequest(), updateValues);
 
-    console.log(habit, user);
+    // 참고용으로 둡니다.
+    // plainToInstance를 사용하면 endedTime의 값이 startedTime으로 할당되는 문제가 있습니다.
+    // const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
 
     // when
     await habitService.update(habit.id, updateRequest, user.id);
 
     // then
-    const foundHabit = await orm.em.find(Habit, {})[0];
-    expect(foundHabit).toEqual(
+    const foundHabit = await orm.em.find(Habit, {});
+    expect(foundHabit[0]).toEqual(
       expect.objectContaining({
-        ...instanceToPlain(habit),
+        // 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
+        // ...instanceToPlain(habit),
         ...updateValues,
       }),
     );

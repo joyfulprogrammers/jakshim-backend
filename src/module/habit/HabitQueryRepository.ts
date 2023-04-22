@@ -11,11 +11,11 @@ export class HabitQueryRepository {
   ) {}
 
   async findOneByHabitAndUser(habitId: number, userId: number) {
-    return this.habitRepository
+    const habit = await this.habitRepository
       .createQueryBuilder('habit')
-      .join('habit.achievement', 'achievement')
-      .join('habit.habitBadhabit', 'habitBadhabit')
-      .where({ 'habit.id': habitId, 'habit.user_id': userId });
+      .where({ 'habit.id': habitId, 'habit.user_id': userId })
+      .getSingleResult();
+    return habit;
   }
 
   async findAllByUser(userId: number) {
