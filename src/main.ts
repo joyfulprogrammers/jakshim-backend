@@ -14,7 +14,9 @@ import { CustomValidationError } from './exceptions/CustomValidationError';
 import { SessionName } from './constant/SessionConstant';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['error', 'warn', 'debug', 'log', 'verbose'],
+  });
 
   try {
     await synchronizeEntities();

@@ -31,56 +31,30 @@ import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
 import { HabitFindResponse } from './dto/HabitFindResponse';
 import { AuthSessionDto } from '../auth/dto/AuthSessionDto';
+import { LocalDate } from '@js-joda/core';
+import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
-@Controller('api/habit')
+@Controller('api/habits')
 export class HabitController {
   constructor(private readonly habitService: HabitService) {}
 
-  @Get('/all')
+  @Get('/:id')
   @ApiCookieAuth()
   @ApiOperation({
-    summary: '내 습관 조회 API',
-    description: '내 습관을 모두 조회합니다.',
-  })
-  @ApiOkResponseBy(HabitFindResponse)
-  async getMyHabits(@Session() user: AuthSessionDto) {
-    try {
-      const habits = await this.habitService.findAllByUser(user.id);
-
-      return ResponseEntity.OK_WITH(
-        habits.map((habit) => new HabitFindResponse(habit)),
-      );
-    } catch (error) {
-      let errorCode: ResponseStatus;
-
-      if (error instanceof BadRequestException) {
-        errorCode = ResponseStatus.BAD_REQUEST;
-      } else {
-        // eslint-disable-next-line no-console
-        console.error(`습관 조회 실패`, error);
-        errorCode = ResponseStatus.SERVER_ERROR;
-      }
-
-      return ResponseEntity.ERROR_WITH(error.message, errorCode);
-    }
-  }
-
-  @Get()
-  @ApiCookieAuth()
-  @ApiOperation({
-    summary: '습관 조회 API',
+    summary: '습관 조회 API (개발 진행중)',
     description: '습관 상세를 조회합니다.',
   })
-  @ApiQuery({
-    type: 'number',
+  @ApiParam({
+    type: 'string',
     name: 'id',
     description: '습관 id',
+    example: 2,
   })
   @ApiOkResponseBy(HabitFindResponse)
   async getHabit(
-    @Query('id', ParseIntPipe) id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Session() user: AuthSessionDto,
   ) {
     try {
@@ -94,7 +68,52 @@ export class HabitController {
         errorCode = ResponseStatus.BAD_REQUEST;
       } else {
         // eslint-disable-next-line no-console
-        console.error(`습관 조회 실패`, error);
+        console.error(`습관 조회 실패 (api/habits/:id)`, error);
+        errorCode = ResponseStatus.SERVER_ERROR;
+      }
+
+      return ResponseEntity.ERROR_WITH(error.message, errorCode);
+    }
+  }
+
+  @Get()
+  @ApiCookieAuth()
+  @ApiOperation({
+    summary: '날짜 습관 조회 API',
+    description: '질의한 날의 달성해야 하는 습관을 조회합니다.',
+  })
+  @ApiQuery({
+    required: false,
+    type: 'string',
+    name: 'date',
+    description: '조회할 날짜',
+    example: '',
+  })
+  @ApiOkResponseBy(HabitFindResponse)
+  async getHabits(
+    @Query('date') date: string,
+    @Session() user: AuthSessionDto,
+  ) {
+    try {
+      if (!date) {
+        date = DateTimeUtil.toString(LocalDate.now());
+      }
+      user;
+      const habits = await this.habitService.findHabits({
+        date,
+      });
+
+      return ResponseEntity.OK_WITH(
+        habits.map((habit) => new HabitFindResponse(habit)),
+      );
+    } catch (error) {
+      let errorCode: ResponseStatus;
+
+      if (error instanceof BadRequestException) {
+        errorCode = ResponseStatus.BAD_REQUEST;
+      } else {
+        // eslint-disable-next-line no-console
+        console.error(`날짜 습관 조회 API (api/habits?)`, error);
         errorCode = ResponseStatus.SERVER_ERROR;
       }
 
@@ -163,8 +182,8 @@ export class HabitController {
 
   @Delete(':id')
   @ApiOperation({
-    summary: '습관 수정 API',
-    description: '습관을 수정합니다.',
+    summary: '습관 삭제 API',
+    description: '습관을 삭제합니다.',
   })
   @ApiParam({
     type: 'string', // codegen 을 위한 타입 변경

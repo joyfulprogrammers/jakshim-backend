@@ -83,7 +83,10 @@ export class DateTimeUtil {
       return null;
     }
 
-    return LocalTime.parse(strDate, DateTimeUtil.TIME_FORMATTER);
+    return LocalTime.parse(
+      this.removeMillisecond(strDate),
+      DateTimeUtil.TIME_FORMATTER,
+    );
   }
 
   static getLocalDateMin(): LocalDate {
@@ -173,5 +176,13 @@ export class DateTimeUtil {
       default:
         return DayOfWeekKRType.SATURDAY;
     }
+  }
+
+  private static doesHaveMillisecond(time: string): boolean {
+    return time.split(':').length === 3;
+  }
+
+  private static removeMillisecond(time: string): string {
+    return this.doesHaveMillisecond(time) ? time.replace(/:[\d]+$/, '') : time;
   }
 }

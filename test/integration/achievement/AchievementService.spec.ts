@@ -18,6 +18,7 @@ import { HabitEntityModule } from 'src/entity/domain/habit/HabitEntityModule';
 import { AchievementFactory } from 'test/factory/AchievementFactory';
 import { faker } from '@mikro-orm/seeder';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
+import { BadhabitEntityModule } from 'src/entity/domain/badhabit/BadhabitEntityModule';
 
 describe('AchievementService', () => {
   let orm: MikroORM;
@@ -33,6 +34,7 @@ describe('AchievementService', () => {
         HabitApiModule,
         AchievementEntityModule,
         HabitEntityModule,
+        BadhabitEntityModule,
       ],
       providers: [
         AchievementService,

@@ -18,10 +18,18 @@ import { HabitBadhabitEntityModule } from 'src/entity/domain/habitBadhabit/Habit
 import { HabitFactory } from 'test/factory/HabitFactory';
 import { UserFactory } from 'test/factory/UserFactory';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
+import { LocalDateTime } from '@js-joda/core';
+import { AchievementFactory } from 'test/factory/AchievementFactory';
+import { AchievementEntityModule } from 'src/entity/domain/achievement/AchievementEntityModule';
+import { BadhabitFactory } from 'test/factory/BadhabitFactory';
+import { HabitBadhabitFactory } from 'test/factory/HabitBadhabitFactory';
 
 describe('HabitService', () => {
   let orm: MikroORM;
   let userFactory: UserFactory;
+  let achievementFactory: AchievementFactory;
+  let badhabitFactory: BadhabitFactory;
+  let habitBadhabitFactory: HabitBadhabitFactory;
   let habitFactory: HabitFactory;
   let habitService: HabitService;
 
@@ -31,6 +39,7 @@ describe('HabitService', () => {
         getSqliteMikroOrmModule(),
         UserEntityModule,
         HabitEntityModule,
+        AchievementEntityModule,
         BadhabitEntityModule,
         HabitBadhabitEntityModule,
       ],
@@ -42,6 +51,9 @@ describe('HabitService', () => {
     await orm.getSchemaGenerator().refreshDatabase();
 
     userFactory = new UserFactory(em);
+    achievementFactory = new AchievementFactory(em);
+    badhabitFactory = new BadhabitFactory(em);
+    habitBadhabitFactory = new HabitBadhabitFactory(em);
     habitFactory = new HabitFactory(em);
     habitService = module.get(HabitService);
   });
@@ -146,7 +158,7 @@ describe('HabitService', () => {
     };
     const updateRequest = Object.assign(new HabitUpdateRequest(), updateValues);
 
-    // 참고용으로 둡니다.
+    // NOTE : 참고용으로 둡니다.
     // plainToInstance를 사용하면 endedTime의 값이 startedTime으로 할당되는 문제가 있습니다.
     // const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
 
@@ -157,7 +169,7 @@ describe('HabitService', () => {
     const foundHabit = await orm.em.find(Habit, {});
     expect(foundHabit[0]).toEqual(
       expect.objectContaining({
-        // 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
+        // NOTE : 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
         // ...instanceToPlain(habit),
         ...updateValues,
       }),
@@ -165,7 +177,7 @@ describe('HabitService', () => {
   });
 
   describe('습관을 조회합니다.', () => {
-    it('습관을 조회합니다.', async () => {
+    it('사용자의 모든 습관을 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
       habitFactory.makeOne({
@@ -183,6 +195,109 @@ describe('HabitService', () => {
 
       // then
       expect(habits).toHaveLength(3);
+    });
+
+    it('삭제된 습관은 조회하지 않습니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      habitFactory.makeOne({
+        user: Reference.create(user),
+      });
+      habitFactory.makeOne({
+        user: Reference.create(user),
+      });
+      await habitFactory.createOne({
+        user: Reference.create(user),
+        deletedAt: LocalDateTime.now(),
+      });
+
+      // when
+      const habits = await habitService.findAllByUser(user.id);
+
+      // then
+      expect(habits).toHaveLength(2);
+    });
+
+    // NOTE : 테스트 실행마다 성공하기도 하고 실패하기도 합니다.
+    // 테스트 실행 순서에 따라 성공과 실패가 결정되는 것 같습니다.
+    it.skip('특정 날에 달성해야 하는 습관을 조회합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const mondayDate = '2021-08-16'; // 월요일
+      habitFactory.makeOne({
+        user: Reference.create(user),
+        cycleMonday: true,
+      });
+      habitFactory.makeOne({
+        user: Reference.create(user),
+        cycleTuesday: true,
+      });
+      habitFactory.makeOne({
+        user: Reference.create(user),
+        isAllDay: true,
+      });
+      await habitFactory.createOne({
+        user: Reference.create(user),
+        cycleWeek: true,
+      });
+
+      // when
+      const habits = await habitService.findHabits({ date: mondayDate });
+
+      // then
+      expect(habits).toHaveLength(3);
+    });
+
+    it('습관을 조회할 때 달성 기록과 함께 조회합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = await habitFactory.createOne({
+        user: Reference.create(user),
+      });
+      achievementFactory.makeOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+      });
+      await achievementFactory.createOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+      });
+
+      // when
+      const foundHabit = await habitService.findOneByHabitAndUser(
+        habit.id,
+        user.id,
+      );
+
+      // then
+      expect(foundHabit).not.toBeFalsy();
+      expect(foundHabit?.achievement).toHaveLength(2);
+    });
+
+    it('습관을 조회할 때 부정습관과 함께 조회합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = habitFactory.makeOne({
+        user: Reference.create(user),
+      });
+      const badhabit = badhabitFactory.makeOne({
+        user: Reference.create(user),
+      });
+
+      await habitBadhabitFactory.createOne({
+        habit: Reference.create(habit),
+        badhabit: Reference.create(badhabit),
+      });
+
+      // when
+      const foundHabit = await habitService.findOneByHabitAndUser(
+        habit.id,
+        user.id,
+      );
+
+      // then
+      expect(foundHabit).not.toBeFalsy();
+      expect(foundHabit?.habitBadhabit).toHaveLength(1);
     });
   });
 });

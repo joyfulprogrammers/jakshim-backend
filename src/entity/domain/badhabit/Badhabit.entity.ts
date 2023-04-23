@@ -16,8 +16,8 @@ export class Badhabit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
 
-  @OneToMany({ entity: () => HabitBadhabit, mappedBy: 'badhabit' })
-  habitBadhabits = new Collection<HabitBadhabit>(this);
+  @OneToMany(() => HabitBadhabit, (habitBadhabit) => habitBadhabit.badhabit)
+  habitBadhabits?: Collection<HabitBadhabit, this>;
 
   @Property({ comment: '부정습관 이름' })
   name: string;
