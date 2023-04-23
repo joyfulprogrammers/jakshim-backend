@@ -31,8 +31,8 @@ export class HabitCreateRequest {
   targetCount: number;
 
   @ApiProperty({
-    example: 'HH:mm',
-    description: '습관 시작일',
+    example: '00:00',
+    description: '습관 시작 시간',
   })
   @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
   @IsNotEmpty()
@@ -40,8 +40,8 @@ export class HabitCreateRequest {
   startedTime: LocalTime;
 
   @ApiProperty({
-    example: 'HH:mm',
-    description: '습관 종료일',
+    example: '23:59',
+    description: '습관 종료 시간',
   })
   @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
   @IsNotEmpty()

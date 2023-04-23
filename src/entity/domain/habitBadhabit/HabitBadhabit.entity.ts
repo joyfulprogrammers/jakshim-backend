@@ -2,6 +2,7 @@ import {
   Entity,
   IdentifiedReference,
   ManyToOne,
+  // PrimaryKeyType,
   Reference,
 } from '@mikro-orm/core';
 import { Habit } from '../habit/Habit.entity';
@@ -14,6 +15,9 @@ export class HabitBadhabit {
 
   @ManyToOne({ primary: true })
   badhabit: IdentifiedReference<Badhabit>;
+
+  // NOTE : 이걸로 인해서 테스트에서 엔티티 생성을 하지 못함 ... undefined (reading __helper)
+  // [PrimaryKeyType]?: [number, number]; // this is needed for proper type checks in `FilterQuery`
 
   static create(habitId: number, badhabitId: number) {
     const habitBadhabit = new HabitBadhabit();

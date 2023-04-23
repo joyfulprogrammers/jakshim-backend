@@ -104,4 +104,8 @@ export class HabitService {
   async findAllByUser(userId: number) {
     return this.habitQueryRepository.findAllByUser(userId);
   }
+
+  async findHabits({ date }: { date?: string }) {
+    return this.habitQueryRepository.findHabits({ date });
+  }
 }

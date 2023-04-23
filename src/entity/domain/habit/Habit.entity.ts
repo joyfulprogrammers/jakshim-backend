@@ -1,7 +1,9 @@
 import {
+  Collection,
   Entity,
   IdentifiedReference,
   ManyToOne,
+  OneToMany,
   Property,
   Reference,
 } from '@mikro-orm/core';
@@ -10,11 +12,19 @@ import { User } from '../user/User.entity';
 import { LocalDateTime, LocalTime } from '@js-joda/core';
 import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 import { LocalTimeType } from '../../type/LocalTimeType';
+import { Achievement } from '../achievement/Achievement.entity';
+import { HabitBadhabit } from '../habitBadhabit/HabitBadhabit.entity';
 
 @Entity({ tableName: 'habits' })
 export class Habit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
+
+  @OneToMany(() => Achievement, (achievement) => achievement.habit)
+  achievement?: Collection<Achievement, this>;
+
+  @OneToMany(() => HabitBadhabit, (habitBadhabit) => habitBadhabit.habit)
+  habitBadhabit?: Collection<HabitBadhabit, this>;
 
   @Property({ comment: '습관 이름' })
   name: string;
@@ -52,11 +62,57 @@ export class Habit extends BaseTimeEntity {
   @Property({ comment: '주기에 일요일 포함 여부' })
   cycleSunday: boolean;
 
-  @Property({ comment: '주기가 일주일인지 여부' })
+  @Property({
+    comment: '주기가 일주일인지 여부(일주일 중 아무 날에 달성 가능)',
+  })
   cycleWeek: boolean;
 
   @Property({ type: LocalDateTimeType, comment: '삭제 시각' })
   deletedAt?: LocalDateTime;
+
+  // 년월일을 받아서 해당 날짜에 해당하는 주기 조건을 반환합니다.
+  static getCycleOnDate(date?: string) {
+    if (!date) {
+      return {};
+    }
+
+    const day = new Date(date).getDay();
+    const cycles: {
+      cycleMonday?: boolean;
+      cycleTuesday?: boolean;
+      cycleWednesday?: boolean;
+      cycleThursday?: boolean;
+      cycleFriday?: boolean;
+      cycleSaturday?: boolean;
+      cycleSunday?: boolean;
+    } = {};
+
+    switch (day) {
+      case 0:
+        cycles['cycleSunday'] = true;
+        break;
+      case 1:
+        cycles['cycleMonday'] = true;
+        break;
+      case 2:
+        cycles['cycleTuesday'] = true;
+        break;
+      case 3:
+        cycles['cycleWednesday'] = true;
+        break;
+      case 4:
+        cycles['cycleThursday'] = true;
+        break;
+      case 5:
+        cycles['cycleFriday'] = true;
+        break;
+      case 6:
+        cycles['cycleSaturday'] = true;
+        break;
+    }
+
+    return cycles;
+  }
 
   static create(
     userId: number,
