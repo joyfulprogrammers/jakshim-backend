@@ -9,9 +9,11 @@ import { ValidationError } from 'class-validator';
 import { AppModule } from './AppModule';
 import { BadParameterExceptionFilter } from './exceptions/BadParameterExceptionFilter';
 import { HttpExceptionFilter } from './exceptions/HttpExceptionFilter';
-import { synchronizeEntities } from './libs/synchronizeEntities';
 import { CustomValidationError } from './exceptions/CustomValidationError';
 import { SessionName } from './constant/SessionConstant';
+import { Logger } from './libs/logger/Logger';
+import { NotFoundExceptionFilter } from './exceptions/NotFoundExceptionFilter';
+import { synchronizeEntities } from './libs/synchronizeEntities';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -26,8 +28,9 @@ async function bootstrap() {
   }
 
   app.useGlobalFilters(
-    new HttpExceptionFilter(),
-    new BadParameterExceptionFilter(),
+    new NotFoundExceptionFilter(app.get(Logger)),
+    new BadParameterExceptionFilter(app.get(Logger)),
+    new HttpExceptionFilter(app.get(Logger)),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 

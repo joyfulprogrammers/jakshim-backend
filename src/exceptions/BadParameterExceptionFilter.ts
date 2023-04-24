@@ -11,15 +11,21 @@ import { Response } from 'express';
 import { ErrorResponseStatus } from 'src/libs/res/ErrorResponseStatusResponseStatus';
 import { ResponseEntity } from 'src/libs/res/ResponseEntity';
 import { CustomValidationError } from './CustomValidationError';
+import { Logger } from '../libs/logger/Logger';
 
 @Catch(BadRequestException)
 export class BadParameterExceptionFilter implements ExceptionFilter {
+  constructor(private readonly logger: Logger) {}
+
   catch(exception: any, host: ArgumentsHost): any {
     const context = host.switchToHttp();
+    const request = host.switchToHttp().getRequest<Request>();
     const response = context.getResponse<Response>();
     const responseBody = exception.response;
 
     const isValidationError = responseBody instanceof ValidationError;
+
+    this.logger.info(`BadRequestException: url=${request.url}`, exception);
 
     response
       .status(HttpStatus.OK)

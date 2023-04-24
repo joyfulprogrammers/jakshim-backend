@@ -18,11 +18,13 @@ import { UserModule } from './module/user/UserModule';
 import { HabitApiModule } from './module/habit/HabitApiModule';
 import { AchievementApiModule } from './module/achievement/AchievementApiModule';
 import { BadhabitApiModule } from './module/badhabit/BadhabitApiModule';
+import { LoggerModule } from './libs/logger/LoggerModule';
 
 @Module({
   imports: [
     MikroOrmModule.forRoot(config),
     RedisModule.register('localhost', 6385),
+    LoggerModule.register(),
     SessionOptionModule.register(
       'BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k',
       Date.now() + 30 * 86400 * 1000,
