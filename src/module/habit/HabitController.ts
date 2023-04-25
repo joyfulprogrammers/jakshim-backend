@@ -100,6 +100,7 @@ export class HabitController {
       }
       user;
       const habits = await this.habitService.findHabits({
+        userId: user.id,
         date,
       });
 

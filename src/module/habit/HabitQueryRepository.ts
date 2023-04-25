@@ -12,12 +12,20 @@ export class HabitQueryRepository {
     private readonly habitRepository: EntityRepository<Habit>,
   ) {}
 
-  async findHabits({ date }: { date?: string }): Promise<Habit[]> {
+  async findHabits({
+    userId,
+    date,
+  }: {
+    userId: number;
+    date?: string;
+  }): Promise<Habit[]> {
     const cycleConditions = Habit.getCycleOnDate(date);
     const targetDate = LocalDate.parse(
       date || DateTimeUtil.toString(LocalDate.now()),
     ).atStartOfDay();
-
+    userId;
+    cycleConditions;
+    targetDate;
     const habits = await this.habitRepository
       .createQueryBuilder('habit')
       .select('*')
@@ -26,12 +34,19 @@ export class HabitQueryRepository {
       .leftJoinAndSelect('habitBadhabit.badhabit', 'badhabit')
       .where({
         $and: [
-          { deletedAt: null },
+          // NOTE : 질의 메인테이블(?)의 컬럼 이름은 스네이크 케이스로 작성해야 하고
+          { 'habit.user_id': userId, 'habit.deleted_at': null },
           {
-            'achievement.created_at': {
-              $gte: targetDate,
-              $lt: targetDate.plusDays(1),
-            },
+            $or: [
+              // NODE : 조인 테이블의 컬럼 이름은 카멜 케이스로 작성해야 테스트를 통과한다.
+              { 'achievement.createdAt': null },
+              {
+                'achievement.createdAt': {
+                  $gte: targetDate,
+                  $lt: targetDate.plusDays(1),
+                },
+              },
+            ],
           },
         ],
         $or: [{ isAllDay: true }, { cycleWeek: true }, { ...cycleConditions }],

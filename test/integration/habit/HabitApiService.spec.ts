@@ -63,7 +63,7 @@ describe('HabitService', () => {
   });
 
   beforeEach(async () => {
-    await Promise.all([orm.getSchemaGenerator().clearDatabase()]);
+    await orm.getSchemaGenerator().clearDatabase();
   });
 
   it('습관을 정상적으로 생성합니다.', async () => {
@@ -220,29 +220,43 @@ describe('HabitService', () => {
 
     // NOTE : 테스트 실행마다 성공하기도 하고 실패하기도 합니다.
     // 테스트 실행 순서에 따라 성공과 실패가 결정되는 것 같습니다.
-    it.skip('특정 날에 달성해야 하는 습관을 조회합니다.', async () => {
+    it('특정 날에 달성해야 하는 습관을 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
       const mondayDate = '2021-08-16'; // 월요일
+      // 월요일 주기 습관
       habitFactory.makeOne({
         user: Reference.create(user),
+        isAllDay: false,
+        cycleWeek: false,
         cycleMonday: true,
       });
+      // 월요일 주기가 아닌 습관
       habitFactory.makeOne({
         user: Reference.create(user),
+        isAllDay: false,
+        cycleWeek: false,
         cycleTuesday: true,
+        cycleMonday: false,
       });
+      // 하루종일 습관
       habitFactory.makeOne({
         user: Reference.create(user),
         isAllDay: true,
+        cycleWeek: false,
       });
+      // 주간 주기 습관
       await habitFactory.createOne({
         user: Reference.create(user),
         cycleWeek: true,
+        isAllDay: false,
       });
 
       // when
-      const habits = await habitService.findHabits({ date: mondayDate });
+      const habits = await habitService.findHabits({
+        userId: user.id,
+        date: mondayDate,
+      });
 
       // then
       expect(habits).toHaveLength(3);
@@ -251,8 +265,9 @@ describe('HabitService', () => {
     it('습관을 조회할 때 달성 기록과 함께 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
-      const habit = await habitFactory.createOne({
+      const habit = habitFactory.makeOne({
         user: Reference.create(user),
+        isAllDay: true,
       });
       achievementFactory.makeOne({
         habit: Reference.create(habit),
@@ -264,14 +279,11 @@ describe('HabitService', () => {
       });
 
       // when
-      const foundHabit = await habitService.findOneByHabitAndUser(
-        habit.id,
-        user.id,
-      );
+      const foundHabit = await habitService.findHabits({ userId: user.id });
 
       // then
-      expect(foundHabit).not.toBeFalsy();
-      expect(foundHabit?.achievement).toHaveLength(2);
+      expect(foundHabit).toHaveLength(1);
+      expect(foundHabit[0]?.achievement).toHaveLength(2);
     });
 
     it('습관을 조회할 때 부정습관과 함께 조회합니다.', async () => {
