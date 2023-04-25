@@ -55,7 +55,7 @@ export class HabitQueryRepository {
     return habits;
   }
 
-  async findOneByHabitAndUser(habitId: number, userId: number) {
+  async findOneHabit({ habitId, userId }: { habitId: number; userId: number }) {
     const habit = await this.habitRepository
       .createQueryBuilder('habit')
       .leftJoinAndSelect('habit.achievement', 'achievement')
@@ -64,7 +64,7 @@ export class HabitQueryRepository {
       .where({
         'habit.id': habitId,
         'habit.user_id': userId,
-        'habit.deletedAt': null,
+        'habit.deleted_at': null,
       })
       .getSingleResult();
 

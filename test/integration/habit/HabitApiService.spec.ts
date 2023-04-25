@@ -286,6 +286,36 @@ describe('HabitService', () => {
       expect(foundHabit[0]?.achievement).toHaveLength(2);
     });
 
+    it('개별 습관을 조회할 땐 과거 달성 기록도 포함하여 조회합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = habitFactory.makeOne({
+        user: Reference.create(user),
+        isAllDay: true,
+      });
+      achievementFactory.makeOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+      });
+      achievementFactory.makeOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+        createdAt: LocalDateTime.now().minusDays(2),
+      });
+      await achievementFactory.createOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+        createdAt: LocalDateTime.now().minusDays(1),
+      });
+
+      // when
+      const foundHabit = await habitService.findOneHabit(habit.id, user.id);
+
+      // then
+      expect(foundHabit).not.toBeFalsy();
+      expect(foundHabit?.achievement).toHaveLength(3);
+    });
+
     it('습관을 조회할 때 부정습관과 함께 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
@@ -302,10 +332,7 @@ describe('HabitService', () => {
       });
 
       // when
-      const foundHabit = await habitService.findOneByHabitAndUser(
-        habit.id,
-        user.id,
-      );
+      const foundHabit = await habitService.findOneHabit(habit.id, user.id);
 
       // then
       expect(foundHabit).not.toBeFalsy();

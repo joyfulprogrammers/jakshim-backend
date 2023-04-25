@@ -8,6 +8,7 @@ import {
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { Habit } from '../habit/Habit.entity';
 import { User } from '../user/User.entity';
+import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 @Entity({ tableName: 'achievements' })
 export class Achievement extends BaseTimeEntity {
@@ -40,6 +41,13 @@ export class Achievement extends BaseTimeEntity {
     achievement.count = count;
 
     return achievement;
+  }
+
+  isTodayAchievement() {
+    const today = DateTimeUtil.getTodayMin();
+    const tomorrow = today.plusDays(1);
+
+    return this.createdAt.isAfter(today) && this.createdAt.isBefore(tomorrow);
   }
 
   update(request: { targetCount?: number; count?: number }) {

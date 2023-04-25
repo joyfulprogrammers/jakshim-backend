@@ -53,10 +53,10 @@ export class HabitService {
   }
 
   async update(id: number, request: HabitUpdateRequest, userId: number) {
-    const habit = await this.habitQueryRepository.findOneByHabitAndUser(
-      id,
+    const habit = await this.habitQueryRepository.findOneHabit({
+      habitId: id,
       userId,
-    );
+    });
 
     if (!habit) {
       throw new NotFoundException('습관이 존재하지 않습니다.');
@@ -76,10 +76,10 @@ export class HabitService {
   }
 
   async delete(id: number, userId: number, now = LocalDateTime.now()) {
-    const habit = await this.habitQueryRepository.findOneByHabitAndUser(
-      id,
+    const habit = await this.habitQueryRepository.findOneHabit({
+      habitId: id,
       userId,
-    );
+    });
 
     if (!habit) {
       throw new NotFoundException('습관이 존재하지 않습니다');
@@ -97,8 +97,8 @@ export class HabitService {
     return habit;
   }
 
-  async findOneByHabitAndUser(id: number, userId: number) {
-    return this.habitQueryRepository.findOneByHabitAndUser(id, userId);
+  async findOneHabit(id: number, userId: number) {
+    return this.habitQueryRepository.findOneHabit({ habitId: id, userId });
   }
 
   async findAllByUser(userId: number) {

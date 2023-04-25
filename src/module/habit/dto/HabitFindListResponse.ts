@@ -2,9 +2,8 @@ import { Habit } from 'src/entity/domain/habit/Habit.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
-import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
 
-export class HabitFindResponse {
+export class HabitFindListResponse {
   @Exclude() private readonly _habit: {
     id: number;
     name: string;
@@ -13,7 +12,6 @@ export class HabitFindResponse {
     weeklyCycle: string[];
     achievementCount: number;
     achievementTargetCount: number;
-    achievements: Achievement[];
 
     createdAt: string;
     updatedAt: string;
@@ -56,9 +54,7 @@ export class HabitFindResponse {
       }
     }
 
-    const todayAchievement = habit.achievement
-      ?.getItems()
-      .find((achievement) => achievement.isTodayAchievement());
+    const achievement = habit.achievement?.getItems()[0];
 
     this._habit = {
       id: habit.id,
@@ -66,12 +62,10 @@ export class HabitFindResponse {
       startedTime: DateTimeUtil.toString(habit.startedTime),
       endedTime: DateTimeUtil.toString(habit.endedTime),
       weeklyCycle,
-      achievements: habit.achievement?.getItems() || [],
-      achievementCount: todayAchievement ? todayAchievement.count : 0,
-      achievementTargetCount: habit.targetCount,
-
       createdAt: DateTimeUtil.toString(habit.createdAt),
       updatedAt: DateTimeUtil.toString(habit.updatedAt),
+      achievementCount: achievement ? achievement.count : 0,
+      achievementTargetCount: habit.targetCount,
     };
   }
 
@@ -104,22 +98,6 @@ export class HabitFindResponse {
             'saturday',
             'sunday',
           ],
-        },
-      },
-      achievements: {
-        type: 'array',
-        description: '습관 달성 정보',
-        items: {
-          type: 'object',
-          properties: {
-            id: { type: 'number', description: '습관 달성 아이디' },
-            count: { type: 'number', description: '습관 달성 횟수' },
-            targetCount: { type: 'number', description: '습관 목표 횟수' },
-            createdAt: {
-              type: 'string',
-              description: '습관 달성 생성 시간',
-            },
-          },
         },
       },
       achievementCount: {

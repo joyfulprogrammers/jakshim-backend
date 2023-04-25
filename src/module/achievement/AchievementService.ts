@@ -30,10 +30,7 @@ export class AchievementService {
       return todayAchievement;
     }
 
-    const habit = await this.habitService.findOneByHabitAndUser(
-      habitId,
-      userId,
-    );
+    const habit = await this.habitService.findOneHabit(habitId, userId);
 
     if (!habit) {
       throw new NotFoundException('습관이 존재하지 않습니다');

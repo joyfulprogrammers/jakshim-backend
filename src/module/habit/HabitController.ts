@@ -30,6 +30,7 @@ import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
 import { HabitFindResponse } from './dto/HabitFindResponse';
+import { HabitFindListResponse } from './dto/HabitFindListResponse';
 import { AuthSessionDto } from '../auth/dto/AuthSessionDto';
 import { LocalDate } from '@js-joda/core';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
@@ -58,7 +59,7 @@ export class HabitController {
     @Session() user: AuthSessionDto,
   ) {
     try {
-      const habit = await this.habitService.findOneByHabitAndUser(id, user.id);
+      const habit = await this.habitService.findOneHabit(id, user.id);
 
       return ResponseEntity.OK_WITH(new HabitFindResponse(habit!)); // TODO: habit이 없을 경우 처리
     } catch (error) {
@@ -89,7 +90,7 @@ export class HabitController {
     description: '조회할 날짜',
     example: '',
   })
-  @ApiOkResponseBy(HabitFindResponse)
+  @ApiOkResponseBy(HabitFindListResponse)
   async getHabits(
     @Query('date') date: string,
     @Session() user: AuthSessionDto,
@@ -105,7 +106,7 @@ export class HabitController {
       });
 
       return ResponseEntity.OK_WITH(
-        habits.map((habit) => new HabitFindResponse(habit)),
+        habits.map((habit) => new HabitFindListResponse(habit)),
       );
     } catch (error) {
       let errorCode: ResponseStatus;
