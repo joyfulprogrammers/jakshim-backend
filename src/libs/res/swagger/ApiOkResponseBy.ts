@@ -12,3 +12,17 @@ export function ApiOkResponseBy(...types: Parameters<typeof ApiExtraModels>) {
     ),
   );
 }
+
+export function ApiOkArrayResponseBy(
+  ...types: Parameters<typeof ApiExtraModels>
+) {
+  return applyDecorators(
+    ApiExtraModels(...types),
+    ApiOkResponse(
+      CustomResponse.by({
+        type: 'array',
+        items: { $ref: getSchemaPath(types[0]) },
+      }),
+    ),
+  );
+}

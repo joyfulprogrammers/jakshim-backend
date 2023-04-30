@@ -25,7 +25,10 @@ import { ResponseEntity } from '../../libs/res/ResponseEntity';
 import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { LoggedInGuard } from '../auth/guard/LoggedInGuard';
 import { HabitUpdateResponse } from './dto/HabitUpdateResponse';
-import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
+import {
+  ApiOkArrayResponseBy,
+  ApiOkResponseBy,
+} from '../../libs/res/swagger/ApiOkResponseBy';
 import { Session } from '../../decorator/Session';
 import { HabitDeleteResponse } from './dto/HabitDeleteResponse';
 import { HabitCreateResponse } from './dto/HabitCreateResponse';
@@ -44,7 +47,7 @@ export class HabitController {
   @Get('/:id')
   @ApiCookieAuth()
   @ApiOperation({
-    summary: '습관 조회 API (개발 진행중)',
+    summary: '습관 조회 API',
     description: '습관 상세를 조회합니다.',
   })
   @ApiParam({
@@ -87,10 +90,11 @@ export class HabitController {
     required: false,
     type: 'string',
     name: 'date',
-    description: '조회할 날짜',
+    description:
+      '조회할 날짜. 입력하지 않을 경우 오늘 날짜로 조회합니다. (yyyy-MM-dd)',
     example: '',
   })
-  @ApiOkResponseBy(HabitFindListResponse)
+  @ApiOkArrayResponseBy(HabitFindListResponse)
   async getHabits(
     @Query('date') date: string,
     @Session() user: AuthSessionDto,
@@ -99,7 +103,6 @@ export class HabitController {
       if (!date) {
         date = DateTimeUtil.toString(LocalDate.now());
       }
-      user;
       const habits = await this.habitService.findHabits({
         userId: user.id,
         date,
