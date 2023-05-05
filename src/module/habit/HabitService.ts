@@ -1,8 +1,4 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
 import { TransactionService } from '../../entity/transaction/TransactionService';
 import { HabitCreateRequest } from './dto/HabitCreateRequest';
@@ -10,6 +6,8 @@ import { HabitUpdateRequest } from './dto/HabitUpdateRequest';
 import { HabitQueryRepository } from './HabitQueryRepository';
 import { LocalDateTime } from '@js-joda/core';
 import { HabitBadhabit } from '../../entity/domain/habitBadhabit/HabitBadhabit.entity';
+import { ErrorResponseStatus } from 'src/libs/res/ErrorResponseStatusResponseStatus';
+import { ResponseStatus } from 'src/libs/res/ResponseStatus';
 
 @Injectable()
 export class HabitService {
@@ -52,14 +50,17 @@ export class HabitService {
     return newHabit;
   }
 
-  async update(id: number, request: HabitUpdateRequest, userId: number) {
+  async update(habitId: number, request: HabitUpdateRequest, userId: number) {
     const habit = await this.habitQueryRepository.findOneHabit({
-      habitId: id,
+      habitId,
       userId,
     });
 
     if (!habit) {
-      throw new NotFoundException('습관이 존재하지 않습니다.');
+      throw new ErrorResponseStatus(
+        ResponseStatus.NOT_FOUND,
+        `습관을 찾을 수 없습니다. 습관 아이디 : ${habitId}`,
+      );
     }
 
     if (habit.user?.id !== userId) {
@@ -75,14 +76,17 @@ export class HabitService {
     return habit;
   }
 
-  async delete(id: number, userId: number, now = LocalDateTime.now()) {
+  async delete(habitId: number, userId: number, now = LocalDateTime.now()) {
     const habit = await this.habitQueryRepository.findOneHabit({
-      habitId: id,
+      habitId,
       userId,
     });
 
     if (!habit) {
-      throw new NotFoundException('습관이 존재하지 않습니다');
+      throw new ErrorResponseStatus(
+        ResponseStatus.NOT_FOUND,
+        `습관을 찾을 수 없습니다. 습관 아이디 : ${habitId}`,
+      );
     }
 
     if (habit.user?.id !== userId) {
@@ -97,8 +101,20 @@ export class HabitService {
     return habit;
   }
 
-  async findOneHabit(id: number, userId: number) {
-    return this.habitQueryRepository.findOneHabit({ habitId: id, userId });
+  async findOneHabit(habitId: number, userId: number) {
+    const habit = await this.habitQueryRepository.findOneHabit({
+      habitId,
+      userId,
+    });
+
+    if (!habit) {
+      throw new ErrorResponseStatus(
+        ResponseStatus.NOT_FOUND,
+        `습관을 찾을 수 없습니다. 습관 아이디 : ${habitId}`,
+      );
+    }
+
+    return habit;
   }
 
   async findAllByUser(userId: number) {

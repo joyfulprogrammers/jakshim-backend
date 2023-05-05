@@ -2,7 +2,6 @@ import { Habit } from 'src/entity/domain/habit/Habit.entity';
 import { Exclude, Expose } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
-import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
 
 export class HabitFindResponse {
   @Exclude() private readonly _habit: {
@@ -13,7 +12,16 @@ export class HabitFindResponse {
     weeklyCycle: string[];
     achievementCount: number;
     achievementTargetCount: number;
-    achievements: Achievement[];
+    achievements: {
+      id: number;
+      count: number;
+      targetCount: number;
+      createdAt: string;
+    }[];
+    badhabits: {
+      id: number;
+      name: string;
+    }[];
 
     createdAt: string;
     updatedAt: string;
@@ -59,6 +67,13 @@ export class HabitFindResponse {
     const todayAchievement = habit.achievement
       ?.getItems()
       .find((achievement) => achievement.isTodayAchievement());
+    const achievements =
+      habit.achievement?.getItems().map((achievement) => ({
+        id: achievement.id,
+        count: achievement.count,
+        targetCount: achievement.targetCount,
+        createdAt: DateTimeUtil.toString(achievement.createdAt),
+      })) || [];
 
     this._habit = {
       id: habit.id,
@@ -66,9 +81,14 @@ export class HabitFindResponse {
       startedTime: DateTimeUtil.toString(habit.startedTime),
       endedTime: DateTimeUtil.toString(habit.endedTime),
       weeklyCycle,
-      achievements: habit.achievement?.getItems() || [],
+      achievements,
       achievementCount: todayAchievement ? todayAchievement.count : 0,
       achievementTargetCount: habit.targetCount,
+      badhabits:
+        habit.habitBadhabit?.getItems().map((habitBadhabit) => ({
+          id: habitBadhabit.badhabit.id,
+          name: habitBadhabit.badhabit.getEntity().name,
+        })) || [],
 
       createdAt: DateTimeUtil.toString(habit.createdAt),
       updatedAt: DateTimeUtil.toString(habit.updatedAt),
@@ -117,7 +137,8 @@ export class HabitFindResponse {
             targetCount: { type: 'number', description: '습관 목표 횟수' },
             createdAt: {
               type: 'string',
-              description: '습관 달성 생성 시간',
+              description: '습관 달성 시간',
+              example: '2023-04-23 08:41:03',
             },
           },
         },
@@ -131,6 +152,21 @@ export class HabitFindResponse {
         type: 'number',
         description: '습관 목표 횟수',
         example: 5,
+      },
+      badhabits: {
+        type: 'array',
+        description: '부정 습관',
+        items: {
+          type: 'object',
+          properties: {
+            id: { type: 'number', description: '부정 습관 아이디', example: 1 },
+            name: {
+              type: 'string',
+              description: '부정 습관 이름',
+              example: '늦잠',
+            },
+          },
+        },
       },
       createdAt: {
         type: 'string',

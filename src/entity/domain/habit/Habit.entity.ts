@@ -14,15 +14,18 @@ import { LocalDateTimeType } from '../../type/LocalDateTimeType';
 import { LocalTimeType } from '../../type/LocalTimeType';
 import { Achievement } from '../achievement/Achievement.entity';
 import { HabitBadhabit } from '../habitBadhabit/HabitBadhabit.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ tableName: 'habits' })
 export class Habit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
 
+  @Exclude()
   @OneToMany(() => Achievement, (achievement) => achievement.habit)
   achievement?: Collection<Achievement, this>;
 
+  @Exclude()
   @OneToMany(() => HabitBadhabit, (habitBadhabit) => habitBadhabit.habit)
   habitBadhabit?: Collection<HabitBadhabit, this>;
 

@@ -64,7 +64,7 @@ export class HabitController {
     try {
       const habit = await this.habitService.findOneHabit(id, user.id);
 
-      return ResponseEntity.OK_WITH(new HabitFindResponse(habit!)); // TODO: habit이 없을 경우 처리
+      return ResponseEntity.OK_WITH(new HabitFindResponse(habit));
     } catch (error) {
       let errorCode: ResponseStatus;
 

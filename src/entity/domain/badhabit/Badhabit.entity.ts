@@ -10,12 +10,14 @@ import {
 import { BaseTimeEntity } from '../BaseTimeEntity';
 import { User } from '../user/User.entity';
 import { HabitBadhabit } from '../habitBadhabit/HabitBadhabit.entity';
+import { Exclude } from 'class-transformer';
 
 @Entity({ tableName: 'badhabits' })
 export class Badhabit extends BaseTimeEntity {
   @ManyToOne({ index: true })
   user: IdentifiedReference<User>;
 
+  @Exclude()
   @OneToMany(() => HabitBadhabit, (habitBadhabit) => habitBadhabit.badhabit)
   habitBadhabits?: Collection<HabitBadhabit, this>;
 
