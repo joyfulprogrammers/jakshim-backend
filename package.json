@@ -109,7 +109,10 @@
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ]
   },
   "mikro-orm": {
     "useTsNode": true,
