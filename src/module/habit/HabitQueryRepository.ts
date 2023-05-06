@@ -23,9 +23,7 @@ export class HabitQueryRepository {
     const targetDate = LocalDate.parse(
       date || DateTimeUtil.toString(LocalDate.now()),
     ).atStartOfDay();
-    userId;
-    cycleConditions;
-    targetDate;
+
     const habits = await this.habitRepository
       .createQueryBuilder('habit')
       .select('*')
