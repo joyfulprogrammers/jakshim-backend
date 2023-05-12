@@ -18,7 +18,7 @@ import { AuthSignInRequest } from './dto/AuthSignInRequest';
 import { NotLoggedInGuard } from './guard/NotLoggedInGuard';
 import { AuthLocalGuard } from './guard/AuthLocalGuard';
 import { UserService } from '../user/UserService';
-import { AuthCheckResponse } from './dto/AuthCheckResponse';
+import { AuthIsLoggedInResponse } from './dto/AuthIsLoggedInResponse';
 import { ApiOkResponseBy } from '../../libs/res/swagger/ApiOkResponseBy';
 import { AuthSignUpRequest } from './dto/AuthSignUpRequest';
 
@@ -108,19 +108,19 @@ export class AuthController {
     summary: '로그인 체크 API',
     description: '로그인한 유저가 있는지 체크하고 정보를 가져옵니다.',
   })
-  @ApiOkResponseBy(AuthCheckResponse)
+  @ApiOkResponseBy(AuthIsLoggedInResponse)
   async check(@Req() request: any) {
     try {
       if (!request.session || !request.session.passport) {
-        return ResponseEntity.OK_WITH<AuthCheckResponse>(
-          new AuthCheckResponse(false),
+        return ResponseEntity.OK_WITH<AuthIsLoggedInResponse>(
+          new AuthIsLoggedInResponse(false),
         );
       }
       const user = request.session.passport.user;
       const foundUser = await this.userService.find(user.id);
 
-      return ResponseEntity.OK_WITH<AuthCheckResponse>(
-        new AuthCheckResponse(!!foundUser),
+      return ResponseEntity.OK_WITH<AuthIsLoggedInResponse>(
+        new AuthIsLoggedInResponse(!!foundUser),
       );
     } catch (error) {
       let errorCode: ResponseStatus;

@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude, Expose } from 'class-transformer';
 
-export class AuthCheckResponse {
+export class AuthIsLoggedInResponse {
   @Exclude() private readonly _isLoggedIn: boolean;
 
   constructor(isLoggedIn: boolean) {
