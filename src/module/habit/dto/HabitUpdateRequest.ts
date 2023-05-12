@@ -12,6 +12,13 @@ export class HabitUpdateRequest {
   userId: number;
 
   @ApiProperty({
+    example: 'dancing_rion',
+    description: '습관 아이콘',
+  })
+  @IsString()
+  icon?: string;
+
+  @ApiProperty({
     example: '운동',
     description: '습관명',
   })

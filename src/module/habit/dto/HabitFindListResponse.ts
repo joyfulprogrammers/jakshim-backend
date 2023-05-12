@@ -5,6 +5,7 @@ import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
 
 export class HabitFindListResponse {
   @Exclude() private readonly _id: number;
+  @Exclude() private readonly _icon?: string;
   @Exclude() private readonly _name: string;
   @Exclude() private readonly _startedTime: string;
   @Exclude() private readonly _endedTime: string;
@@ -54,6 +55,7 @@ export class HabitFindListResponse {
     const achievement = habit.achievement?.getItems()[0];
 
     this._id = habit.id;
+    this._icon = habit.icon;
     this._name = habit.name;
     this._startedTime = DateTimeUtil.toString(habit.startedTime);
     this._endedTime = DateTimeUtil.toString(habit.endedTime);
@@ -72,6 +74,16 @@ export class HabitFindListResponse {
   @Expose()
   get id() {
     return this._id;
+  }
+
+  @ApiProperty({
+    type: 'string',
+    description: '습관 아이콘',
+    example: 'dancing_rion',
+  })
+  @Expose()
+  get icon() {
+    return this._icon;
   }
 
   @ApiProperty({

@@ -5,6 +5,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  MaxLength,
   ValidateIf,
 } from 'class-validator';
 import { LocalTime } from '@js-joda/core';
@@ -16,6 +17,14 @@ import { Type } from 'class-transformer';
 import { Badhabit } from '../../../entity/domain/badhabit/Badhabit.entity';
 
 export class HabitCreateRequest {
+  @ApiProperty({
+    example: 'dancing_rion',
+    description: '습관 아이콘',
+  })
+  @IsString()
+  @MaxLength(50)
+  icon?: string;
+
   @ApiProperty({
     example: '운동',
     description: '습관명',
@@ -114,7 +123,8 @@ export class HabitCreateRequest {
   @ApiProperty({
     type: BadHabitRequest,
     isArray: true,
-    example: [{ name: '유튜브 보기' }, { id: 2, name: '라면먹기' }],
+    description: '{ id?: number, name: string }',
+    example: [{ name: '유튜브 보기' }, { name: '라면먹기' }],
   })
   @IsArray()
   @Type(() => BadHabitRequest)
@@ -125,6 +135,7 @@ export class HabitCreateRequest {
 
     return Habit.create(
       userId,
+      this.icon,
       this.name,
       this.targetCount,
       this.startedTime,

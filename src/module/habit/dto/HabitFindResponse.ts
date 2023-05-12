@@ -6,6 +6,7 @@ import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
 export class HabitFindResponse {
   @Exclude() private readonly _habit: {
     id: number;
+    icon?: string;
     name: string;
     startedTime: string;
     endedTime: string;
@@ -75,8 +76,30 @@ export class HabitFindResponse {
         createdAt: DateTimeUtil.toString(achievement.createdAt),
       })) || [];
 
+    const badhabits = (() => {
+      const badhabits = [] as any;
+
+      if (habit.habitBadhabit) {
+        const habitBadhabits = habit.habitBadhabit.getItems();
+
+        for (const habitBadhabit of habitBadhabits) {
+          const badhabit = habitBadhabit.badhabit;
+
+          if (badhabit) {
+            badhabits.push({
+              id: habitBadhabit.badhabit.id,
+              name: habitBadhabit.badhabit.getEntity().name,
+            });
+          }
+        }
+      }
+
+      return badhabits;
+    })();
+
     this._habit = {
       id: habit.id,
+      icon: habit.icon,
       name: habit.name,
       startedTime: DateTimeUtil.toString(habit.startedTime),
       endedTime: DateTimeUtil.toString(habit.endedTime),
@@ -84,11 +107,7 @@ export class HabitFindResponse {
       achievements,
       achievementCount: todayAchievement ? todayAchievement.count : 0,
       achievementTargetCount: habit.targetCount,
-      badhabits:
-        habit.habitBadhabit?.getItems().map((habitBadhabit) => ({
-          id: habitBadhabit.badhabit.id,
-          name: habitBadhabit.badhabit.getEntity().name,
-        })) || [],
+      badhabits,
 
       createdAt: DateTimeUtil.toString(habit.createdAt),
       updatedAt: DateTimeUtil.toString(habit.updatedAt),
@@ -99,6 +118,7 @@ export class HabitFindResponse {
     type: 'object',
     properties: {
       id: { type: 'number', description: '습관 아이디' },
+      icon: { type: 'string', description: '습관 아이콘' },
       name: { type: 'string', description: '습관 이름' },
       startedTime: {
         type: 'string',

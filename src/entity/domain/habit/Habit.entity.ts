@@ -29,6 +29,9 @@ export class Habit extends BaseTimeEntity {
   @OneToMany(() => HabitBadhabit, (habitBadhabit) => habitBadhabit.habit)
   habitBadhabit?: Collection<HabitBadhabit, this>;
 
+  @Property({ comment: '습관 아이콘' })
+  icon?: string;
+
   @Property({ comment: '습관 이름' })
   name: string;
 
@@ -119,6 +122,7 @@ export class Habit extends BaseTimeEntity {
 
   static create(
     userId: number,
+    icon: string | undefined,
     name: string,
     targetCount: number,
     startedTime: LocalTime,
@@ -134,6 +138,7 @@ export class Habit extends BaseTimeEntity {
     cycleWeek: boolean,
   ) {
     const habit = new Habit();
+    habit.icon = icon;
     habit.name = name;
     habit.isAllDay = isAllDay;
     habit.cycleMonday = cycleMonday;
