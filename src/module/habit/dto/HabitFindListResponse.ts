@@ -117,7 +117,8 @@ export class HabitFindListResponse {
   }
 
   @ApiProperty({
-    type: 'array',
+    isArray: true,
+    type: 'string',
     description: '습관 주기',
     example: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
   })
