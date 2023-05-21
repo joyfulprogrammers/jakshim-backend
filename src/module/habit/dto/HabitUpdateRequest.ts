@@ -1,111 +1,123 @@
 import { LocalTime } from '@js-joda/core';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsNumber, IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { ToLocalTime } from '../../../decorator/ToLocalTime';
+import { BadHabitRequest } from './BadHabitRequest';
+import { Type } from 'class-transformer';
 
 export class HabitUpdateRequest {
-  @ApiProperty({
-    example: 1,
-    description: '유저 아이디',
-  })
-  @IsInt()
-  userId: number;
-
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'dancing_rion',
     description: '습관 아이콘',
   })
   @IsString()
   icon?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: '운동',
     description: '습관명',
   })
   @IsString()
-  name: string;
+  name?: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 5,
     description: '습관 달성 조각 횟수',
   })
   @IsNumber()
-  targetCount: number;
+  targetCount?: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'HH:mm',
     description: '습관 시작일',
   })
   @ToLocalTime()
   startedTime?: LocalTime;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'HH:mm',
     description: '습관 종료일',
   })
   @ToLocalTime()
   endedTime?: LocalTime;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '하루 종일 달성 가능 여부',
   })
   @IsBoolean()
-  isAllDay: boolean;
+  isAllDay?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '월요일 주기 여부',
   })
   @IsBoolean()
-  cycleMonday: boolean;
+  cycleMonday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '화요일 주기 여부',
   })
   @IsBoolean()
-  cycleTuesday: boolean;
+  cycleTuesday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '수요일 주기 여부',
   })
   @IsBoolean()
-  cycleWednesday: boolean;
+  cycleWednesday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '목요일 주기 여부',
   })
   @IsBoolean()
-  cycleThursday: boolean;
+  cycleThursday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '금요일 주기 여부',
   })
   @IsBoolean()
-  cycleFriday: boolean;
+  cycleFriday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '토요일 주기 여부',
   })
   @IsBoolean()
-  cycleSaturday: boolean;
+  cycleSaturday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: true,
     description: '일요일 주기 여부',
   })
   @IsBoolean()
-  cycleSunday: boolean;
+  cycleSunday?: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: false,
     description: '매일 주기 여부',
   })
   @IsBoolean()
-  cycleWeek: boolean;
+  cycleWeek?: boolean;
+
+  @ApiPropertyOptional({
+    type: BadHabitRequest,
+    isArray: true,
+    description: '{ id?: number, name: string }',
+    example: [{ name: '유튜브 보기' }, { name: '라면먹기' }],
+  })
+  @IsOptional()
+  @IsArray()
+  @Type(() => BadHabitRequest)
+  badhabits?: BadHabitRequest[];
 }
