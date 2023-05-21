@@ -1,9 +1,10 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   MaxLength,
   ValidateIf,
@@ -17,10 +18,11 @@ import { Type } from 'class-transformer';
 import { Badhabit } from '../../../entity/domain/badhabit/Badhabit.entity';
 
 export class HabitCreateRequest {
-  @ApiProperty({
+  @ApiPropertyOptional({
     example: 'dancing_rion',
     description: '습관 아이콘',
   })
+  @IsOptional()
   @IsString()
   @MaxLength(50)
   icon?: string;
@@ -122,15 +124,16 @@ export class HabitCreateRequest {
   @IsBoolean()
   cycleWeek: boolean;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: BadHabitRequest,
     isArray: true,
     description: '{ id?: number, name: string }',
     example: [{ name: '유튜브 보기' }, { name: '라면먹기' }],
   })
+  @IsOptional()
   @IsArray()
   @Type(() => BadHabitRequest)
-  badhabits: BadHabitRequest[];
+  badhabits?: BadHabitRequest[];
 
   toEntity(userId: number): Habit {
     this.setAllDayTime();
@@ -163,15 +166,19 @@ export class HabitCreateRequest {
 
   toBadHabitEntities(userId: number) {
     return this.badhabits
-      .filter((badHabit) => !badHabit.id)
-      .map((badHabit) => Badhabit.create(userId, badHabit.name));
+      ? this.badhabits
+          .filter((badHabit) => !badHabit.id)
+          .map((badHabit) => Badhabit.create(userId, badHabit.name))
+      : [];
   }
 
   get existedBadHabits(): BadHabitRequest[] {
-    return this.badhabits.filter((badHabit) => !!badHabit.id);
+    return this.badhabits
+      ? this.badhabits.filter((badHabit) => !!badHabit.id)
+      : [];
   }
 
   get hasBadHabits(): boolean {
-    return this.badhabits?.length > 0;
+    return this.badhabits ? this.badhabits?.length > 0 : false;
   }
 }

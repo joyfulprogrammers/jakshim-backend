@@ -1,7 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class BadHabitRequest {
-  @ApiProperty()
+  @ApiPropertyOptional()
   id?: number;
 
   @ApiProperty()

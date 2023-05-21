@@ -26,7 +26,7 @@ export class HabitService {
       await manager.persistAndFlush(newHabit);
 
       if (!request.hasBadHabits) {
-        return;
+        return newHabit;
       }
 
       const createBadHabits = request.toBadHabitEntities(userId);
