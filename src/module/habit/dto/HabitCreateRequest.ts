@@ -40,6 +40,7 @@ export class HabitCreateRequest {
   targetCount: number;
 
   @ApiProperty({
+    type: 'string',
     example: '00:00',
     description: '습관 시작 시간',
   })
@@ -49,6 +50,7 @@ export class HabitCreateRequest {
   startedTime: LocalTime;
 
   @ApiProperty({
+    type: 'string',
     example: '23:59',
     description: '습관 종료 시간',
   })
