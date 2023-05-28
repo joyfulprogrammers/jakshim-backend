@@ -164,6 +164,10 @@ export class HabitCreateRequest {
     }
   }
 
+  /**
+   * id가 없는 badhabit을 생성하기 위한 badhabit entity를 반환합니다.
+   * @param userId 유저 id
+   */
   toBadHabitEntities(userId: number) {
     return this.badhabits
       ? this.badhabits
@@ -172,12 +176,18 @@ export class HabitCreateRequest {
       : [];
   }
 
+  /**
+   * id가 있는 badhabit만 반환합니다.
+   */
   get existedBadHabits(): BadHabitRequest[] {
     return this.badhabits
       ? this.badhabits.filter((badHabit) => !!badHabit.id)
       : [];
   }
 
+  /**
+   * badhabit이 있는지 여부를 반환합니다.
+   */
   get hasBadHabits(): boolean {
     return this.badhabits ? this.badhabits?.length > 0 : false;
   }

@@ -159,7 +159,8 @@ export class HabitController {
   @Patch('/:id')
   @ApiOperation({
     summary: '습관 수정 API',
-    description: '습관을 수정합니다.',
+    description:
+      '습관을 수정합니다. badhabits의 경우 id가 없이 name만 있다면 부정습관을 생성하고, id가 있다면 기존 부정습관과 연결합니다. 만약 기존에 연결되어있던 부정습관을 전달하지 않는다면 해당 부정습관과 연결을 해제합니다.',
   })
   @ApiParam({
     type: 'string', // codegen 을 위한 타입 변경
@@ -174,7 +175,7 @@ export class HabitController {
     @Session() user: AuthSessionDto,
   ) {
     try {
-      const habit = await this.habitService.update(id, request, user.id);
+      const habit = await this.habitService.update(id, user.id, request);
 
       return ResponseEntity.OK_WITH(new HabitUpdateResponse(habit));
     } catch (error) {

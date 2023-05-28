@@ -142,38 +142,131 @@ describe('HabitService', () => {
     await expect(habitService.createHabit(request, 1)).rejects.toThrowError();
   });
 
-  it('습관을 정상적으로 수정합니다.', async () => {
-    // given
-    const user = userFactory.makeOne();
-    const habit = await habitFactory.createOne({
-      user: Reference.create(user),
+  describe('습관을 수정합니다.', () => {
+    it('습관을 정상적으로 수정합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = await habitFactory.createOne({
+        user: Reference.create(user),
+      });
+
+      const updateValues: Partial<Habit> = {
+        name: 'foo',
+        startedTime: DateTimeUtil.toLocalTimeBy('15:00') || undefined,
+        endedTime: DateTimeUtil.toLocalTimeBy('18:00') || undefined,
+        targetCount: 2,
+        isAllDay: false,
+      };
+      const updateRequest = Object.assign(
+        new HabitUpdateRequest(),
+        updateValues,
+      );
+
+      // NOTE : 참고용으로 둡니다.
+      // plainToInstance를 사용하면 endedTime의 값이 startedTime으로 할당되는 문제가 있습니다.
+      // const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
+
+      // when
+      await habitService.update(habit.id, user.id, updateRequest);
+
+      // then
+      const foundHabit = await orm.em.find(Habit, {});
+      expect(foundHabit[0]).toEqual(
+        expect.objectContaining({
+          // NOTE : 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
+          // ...instanceToPlain(habit),
+          ...updateValues,
+        }),
+      );
     });
 
-    const updateValues: Partial<Habit> = {
-      name: 'foo',
-      startedTime: DateTimeUtil.toLocalTimeBy('15:00') || undefined,
-      endedTime: DateTimeUtil.toLocalTimeBy('18:00') || undefined,
-      targetCount: 2,
-      isAllDay: false,
-    };
-    const updateRequest = Object.assign(new HabitUpdateRequest(), updateValues);
+    it('습관을 수정할 때 새로운 부정습관을 추가할 수 있습니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = await habitFactory.createOne({
+        user: Reference.create(user),
+      });
 
-    // NOTE : 참고용으로 둡니다.
-    // plainToInstance를 사용하면 endedTime의 값이 startedTime으로 할당되는 문제가 있습니다.
-    // const updateRequest = plainToInstance(HabitUpdateRequest, updateValues);
+      const badhabitName = '부정습관 이름';
+      const updateRequest = plainToInstance(HabitUpdateRequest, {
+        badhabits: [{ name: badhabitName }],
+      });
 
-    // when
-    await habitService.update(habit.id, updateRequest, user.id);
+      // when
+      await habitService.update(habit.id, user.id, updateRequest);
 
-    // then
-    const foundHabit = await orm.em.find(Habit, {});
-    expect(foundHabit[0]).toEqual(
-      expect.objectContaining({
-        // NOTE : 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
-        // ...instanceToPlain(habit),
-        ...updateValues,
-      }),
-    );
+      // then
+      const foundHabit = await orm.em.find(Habit, {});
+      const foundBadhabit = await orm.em.find(Badhabit, { name: badhabitName });
+      const foundHabitBadhabit = await orm.em.find(HabitBadhabit, {});
+
+      expect(foundHabit).toHaveLength(1);
+      expect(foundBadhabit).toHaveLength(1);
+      expect(foundHabitBadhabit).toHaveLength(1);
+    });
+
+    it('습관을 수정할 때 기존의 부정습관을 연결할 수 있습니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = habitFactory.makeOne({
+        user: Reference.create(user),
+      });
+      const badhabit = await badhabitFactory.createOne({
+        user: Reference.create(user),
+      });
+
+      const badHabitId = badhabit.id;
+      const updateRequest = plainToInstance(HabitUpdateRequest, {
+        badhabits: [{ id: badHabitId, name: '부정습관 이름' }],
+      });
+
+      // when
+      await habitService.update(habit.id, user.id, updateRequest);
+
+      // then
+      const foundHabit = await orm.em.find(Habit, {});
+      const foundBadhabit = await orm.em.find(Badhabit, {});
+      const foundHabitBadhabit = await orm.em.find(HabitBadhabit, {
+        habit: habit,
+        badhabit: badhabit,
+      });
+
+      expect(foundHabit).toHaveLength(1);
+      expect(foundBadhabit).toHaveLength(1);
+      expect(foundHabitBadhabit).toHaveLength(1);
+    });
+
+    it('습관을 수정할 때 기존의 부정습관을 제거할 수 있습니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const habit = habitFactory.makeOne({
+        user: Reference.create(user),
+      });
+      const badhabit = badhabitFactory.makeOne({
+        user: Reference.create(user),
+      });
+
+      await habitBadhabitFactory.createOne({
+        habit: Reference.create(habit),
+        badhabit: Reference.create(badhabit),
+      });
+
+      const updateRequest = plainToInstance(HabitUpdateRequest, {
+        badhabits: [],
+      });
+
+      // when
+      await habitService.update(habit.id, user.id, updateRequest);
+
+      // then
+      const foundHabit = await orm.em.find(Habit, {});
+      const foundBadhabit = await orm.em.find(Badhabit, {});
+      const foundHabitBadhabit = await orm.em.find(HabitBadhabit, {});
+
+      expect(foundHabit).toHaveLength(1);
+      expect(foundBadhabit).toHaveLength(1);
+      expect(foundHabitBadhabit).toHaveLength(0);
+    });
   });
 
   describe('습관을 조회합니다.', () => {
@@ -218,8 +311,6 @@ describe('HabitService', () => {
       expect(habits).toHaveLength(2);
     });
 
-    // NOTE : 테스트 실행마다 성공하기도 하고 실패하기도 합니다.
-    // 테스트 실행 순서에 따라 성공과 실패가 결정되는 것 같습니다.
     it('특정 날에 달성해야 하는 습관을 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();

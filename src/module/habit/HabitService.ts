@@ -29,12 +29,12 @@ export class HabitService {
         return newHabit;
       }
 
-      const createBadHabits = request.toBadHabitEntities(userId);
-      await manager.persistAndFlush(createBadHabits);
+      const newBadHabits = request.toBadHabitEntities(userId);
+      await manager.persistAndFlush(newBadHabits);
 
       manager.persist(
-        createBadHabits.map((badHabit) =>
-          HabitBadhabit.create(newHabit.id, badHabit.id),
+        newBadHabits.map(
+          (badHabit) => HabitBadhabit.create(newHabit.id, badHabit.id), // Habit과 Badhabit을 연결합니다.
         ),
       );
 
@@ -50,7 +50,7 @@ export class HabitService {
     return newHabit;
   }
 
-  async update(habitId: number, request: HabitUpdateRequest, userId: number) {
+  async update(habitId: number, userId: number, request: HabitUpdateRequest) {
     const habit = await this.habitQueryRepository.findOneHabit({
       habitId,
       userId,
@@ -67,10 +67,49 @@ export class HabitService {
       throw new ForbiddenException('권한이 없습니다');
     }
 
-    habit.update(request);
-
     await this.transactionService.transactional(async (manager) => {
-      await manager.persistAndFlush(habit);
+      const habitBadhabits = habit.habitBadhabit?.getItems() || [];
+
+      // 부정습관을 제거하는 과정
+      if (habitBadhabits.length > 0) {
+        if (!request.hasBadHabits) {
+          manager.remove(habitBadhabits);
+        } else {
+          const deleteBadHabits = habitBadhabits.filter(
+            (habitBadhabit) =>
+              !request.badhabits?.some(
+                (badHabit) => badHabit.id === habitBadhabit.badhabit.id,
+              ),
+          );
+
+          if (deleteBadHabits.length > 0) {
+            manager.remove(deleteBadHabits);
+          }
+        }
+      }
+
+      // 부정습관을 연결하는 과정
+      if (request.hasBadHabits) {
+        const createBadHabits = request.toBadHabitEntities(userId);
+        await manager.persistAndFlush(createBadHabits);
+
+        manager.persist(
+          createBadHabits.map((badHabit) =>
+            HabitBadhabit.create(habit.id, badHabit.id),
+          ),
+        );
+
+        if (request.existedBadHabits.length) {
+          manager.persist(
+            request.existedBadHabits.map((badHabit) =>
+              HabitBadhabit.create(habit.id, badHabit.id!),
+            ),
+          );
+        }
+      }
+
+      habit.update(request);
+      manager.persist(habit);
     });
 
     return habit;
