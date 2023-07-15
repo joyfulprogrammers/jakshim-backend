@@ -9,13 +9,12 @@ import {
   MaxLength,
   ValidateIf,
 } from 'class-validator';
-import { LocalTime } from '@js-joda/core';
-import { ToLocalTime } from '../../../decorator/ToLocalTime';
 import { Habit } from '../../../entity/domain/habit/Habit.entity';
 import { DateTimeUtil } from '../../../entity/util/DateTimeUtil';
 import { BadHabitRequest } from './BadHabitRequest';
 import { Type } from 'class-transformer';
 import { Badhabit } from '../../../entity/domain/badhabit/Badhabit.entity';
+import { BadRequestException } from '@nestjs/common';
 
 export class HabitCreateRequest {
   @ApiPropertyOptional({
@@ -48,8 +47,7 @@ export class HabitCreateRequest {
   })
   @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
   @IsNotEmpty()
-  @ToLocalTime()
-  startedTime: LocalTime;
+  startedTime: string;
 
   @ApiProperty({
     type: 'string',
@@ -58,8 +56,7 @@ export class HabitCreateRequest {
   })
   @ValidateIf((dto: HabitCreateRequest) => !dto.isAllDay)
   @IsNotEmpty()
-  @ToLocalTime()
-  endedTime: LocalTime;
+  endedTime: string;
 
   @ApiProperty({
     example: true,
@@ -136,15 +133,31 @@ export class HabitCreateRequest {
   badhabits?: BadHabitRequest[];
 
   toEntity(userId: number): Habit {
-    this.setAllDayTime();
+    const allDayTime = this.getAllDayTime();
+    let startedTime = null;
+    let endedTime = null;
+
+    if (allDayTime) {
+      startedTime = allDayTime.startedTime;
+      endedTime = allDayTime.endedTime;
+    }
+
+    startedTime = DateTimeUtil.toLocalTimeBy(this.startedTime);
+    endedTime = DateTimeUtil.toLocalTimeBy(this.endedTime);
+
+    if (startedTime === null || endedTime === null) {
+      throw new BadRequestException(
+        `startedTime 또는 endedTime이 잘못되었습니다. ${this.startedTime} | ${this.endedTime}`,
+      );
+    }
 
     return Habit.create(
       userId,
       this.icon,
       this.name,
       this.targetCount,
-      this.startedTime,
-      this.endedTime,
+      startedTime,
+      endedTime,
       this.isAllDay,
       this.cycleMonday,
       this.cycleTuesday,
@@ -157,13 +170,6 @@ export class HabitCreateRequest {
     );
   }
 
-  setAllDayTime(): void {
-    if (this.isAllDay) {
-      this.startedTime = DateTimeUtil.getLocalTimeMin();
-      this.endedTime = DateTimeUtil.getLocalTimeMax();
-    }
-  }
-
   /**
    * id가 없는 badhabit을 생성하기 위한 badhabit entity를 반환합니다.
    * @param userId 유저 id
@@ -174,6 +180,15 @@ export class HabitCreateRequest {
           .filter((badHabit) => !badHabit.id)
           .map((badHabit) => Badhabit.create(userId, badHabit.name))
       : [];
+  }
+
+  private getAllDayTime() {
+    if (this.isAllDay) {
+      return {
+        startedTime: DateTimeUtil.getLocalTimeMin(),
+        endedTime: DateTimeUtil.getLocalTimeMax(),
+      };
+    }
   }
 
   /**
