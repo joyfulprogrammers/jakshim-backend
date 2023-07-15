@@ -20,6 +20,7 @@ export class HabitUpdateRequest {
     description: '습관 아이콘',
   })
   @IsString()
+  @IsOptional()
   icon?: string;
 
   @ApiPropertyOptional({
@@ -27,6 +28,7 @@ export class HabitUpdateRequest {
     description: '습관명',
   })
   @IsString()
+  @IsOptional()
   name?: string;
 
   @ApiPropertyOptional({
@@ -34,6 +36,7 @@ export class HabitUpdateRequest {
     description: '습관 달성 조각 횟수',
   })
   @IsNumber()
+  @IsOptional()
   targetCount?: number;
 
   @ApiPropertyOptional({
@@ -41,6 +44,7 @@ export class HabitUpdateRequest {
     example: '12:30',
     description: '습관 시작일',
   })
+  @IsOptional()
   startedTime?: string;
 
   @ApiPropertyOptional({
@@ -48,6 +52,7 @@ export class HabitUpdateRequest {
     example: '13:30',
     description: '습관 종료일',
   })
+  @IsOptional()
   endedTime?: string;
 
   @ApiPropertyOptional({
@@ -63,6 +68,7 @@ export class HabitUpdateRequest {
     description: '월요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleMonday?: boolean;
 
   @ApiPropertyOptional({
@@ -70,6 +76,7 @@ export class HabitUpdateRequest {
     description: '화요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleTuesday?: boolean;
 
   @ApiPropertyOptional({
@@ -77,6 +84,7 @@ export class HabitUpdateRequest {
     description: '수요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleWednesday?: boolean;
 
   @ApiPropertyOptional({
@@ -84,6 +92,7 @@ export class HabitUpdateRequest {
     description: '목요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleThursday?: boolean;
 
   @ApiPropertyOptional({
@@ -91,6 +100,7 @@ export class HabitUpdateRequest {
     description: '금요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleFriday?: boolean;
 
   @ApiPropertyOptional({
@@ -98,6 +108,7 @@ export class HabitUpdateRequest {
     description: '토요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleSaturday?: boolean;
 
   @ApiPropertyOptional({
@@ -105,6 +116,7 @@ export class HabitUpdateRequest {
     description: '일요일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleSunday?: boolean;
 
   @ApiPropertyOptional({
@@ -112,6 +124,7 @@ export class HabitUpdateRequest {
     description: '매일 주기 여부',
   })
   @IsBoolean()
+  @IsOptional()
   cycleWeek?: boolean;
 
   @ApiPropertyOptional({
@@ -123,6 +136,7 @@ export class HabitUpdateRequest {
   @IsOptional()
   @IsArray()
   @Type(() => BadHabitRequest)
+  @IsOptional()
   badhabits?: BadHabitRequest[];
 
   /**
