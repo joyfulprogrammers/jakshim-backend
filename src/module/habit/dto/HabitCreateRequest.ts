@@ -140,10 +140,10 @@ export class HabitCreateRequest {
     if (allDayTime) {
       startedTime = allDayTime.startedTime;
       endedTime = allDayTime.endedTime;
+    } else {
+      startedTime = DateTimeUtil.toLocalTimeBy(this.startedTime);
+      endedTime = DateTimeUtil.toLocalTimeBy(this.endedTime);
     }
-
-    startedTime = DateTimeUtil.toLocalTimeBy(this.startedTime);
-    endedTime = DateTimeUtil.toLocalTimeBy(this.endedTime);
 
     if (startedTime === null || endedTime === null) {
       throw new BadRequestException(
