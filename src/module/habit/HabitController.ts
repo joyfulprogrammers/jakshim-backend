@@ -37,9 +37,6 @@ import { HabitFindListResponse } from './dto/HabitFindListResponse';
 import { AuthSessionDto } from '../auth/dto/AuthSessionDto';
 import { LocalDate } from '@js-joda/core';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
-import { HabitCreateRequestForSwagger } from './dto/HabitCreateRequestForSwagger';
-import { plainToInstance } from 'class-transformer';
-import { HabitUpdateRequestForSwagger } from './dto/HabitUpdateRequestForSwagger';
 
 @ApiTags('HABIT')
 @UseGuards(LoggedInGuard)
@@ -137,12 +134,11 @@ export class HabitController {
   })
   @ApiOkResponseBy(HabitCreateResponse)
   async createHabit(
-    @Body() request: HabitCreateRequestForSwagger,
+    @Body() request: HabitCreateRequest,
     @Session() user: AuthSessionDto,
   ) {
     try {
-      const createRequest = plainToInstance(HabitCreateRequest, request);
-      const habit = await this.habitService.createHabit(createRequest, user.id);
+      const habit = await this.habitService.createHabit(request, user.id);
 
       return ResponseEntity.OK_WITH(new HabitCreateResponse(habit));
     } catch (error) {
@@ -175,12 +171,11 @@ export class HabitController {
   @ApiOkResponseBy(HabitUpdateResponse)
   async updateHabit(
     @Param('id', ParseIntPipe) id: number,
-    @Body() request: HabitUpdateRequestForSwagger,
+    @Body() request: HabitUpdateRequest,
     @Session() user: AuthSessionDto,
   ) {
     try {
-      const updateRequest = plainToInstance(HabitUpdateRequest, request);
-      const habit = await this.habitService.update(id, user.id, updateRequest);
+      const habit = await this.habitService.update(id, user.id, request);
 
       return ResponseEntity.OK_WITH(new HabitUpdateResponse(habit));
     } catch (error) {
