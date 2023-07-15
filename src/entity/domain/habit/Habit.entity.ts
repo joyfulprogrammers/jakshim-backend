@@ -159,7 +159,12 @@ export class Habit extends BaseTimeEntity {
   }
 
   update(request: Partial<Omit<Habit, 'user'>>) {
-    Object.assign(this, request);
+    Object.keys(request).forEach((key) => {
+      const value = (request as any)[key];
+      if (value !== undefined) {
+        (this as any)[key] = value;
+      }
+    });
   }
 
   delete(now: LocalDateTime) {

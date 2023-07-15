@@ -108,7 +108,7 @@ export class HabitService {
         }
       }
 
-      habit.update(request);
+      habit.update(request.toPartialEntity());
       manager.persist(habit);
     });
 
