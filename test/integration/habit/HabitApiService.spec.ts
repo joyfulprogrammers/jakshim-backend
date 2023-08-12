@@ -150,13 +150,21 @@ describe('HabitService', () => {
         user: Reference.create(user),
       });
 
-      const updateValues: Partial<Habit> = {
+      type HabitForUpdate = Omit<Habit, 'startedTime' | 'endedTime'> & {
+        startedTime: string;
+        endedTime: string;
+      };
+      const startedTime = '15:00';
+      const endedTime = '18:00';
+
+      const updateValues: Partial<HabitForUpdate> = {
         name: 'foo',
-        startedTime: DateTimeUtil.toLocalTimeBy('15:00') || undefined,
-        endedTime: DateTimeUtil.toLocalTimeBy('18:00') || undefined,
+        startedTime,
+        endedTime,
         targetCount: 2,
         isAllDay: false,
       };
+
       const updateRequest = Object.assign(
         new HabitUpdateRequest(),
         updateValues,
@@ -171,11 +179,17 @@ describe('HabitService', () => {
 
       // then
       const foundHabit = await orm.em.find(Habit, {});
+
+      delete foundHabit[0].achievement;
+      delete foundHabit[0].habitBadhabit;
+
       expect(foundHabit[0]).toEqual(
         expect.objectContaining({
           // NOTE : 아래와 같이 실행하면 순환 참조로 인해 에러가 발생합니다.
           // ...instanceToPlain(habit),
           ...updateValues,
+          startedTime: DateTimeUtil.toLocalTimeBy(startedTime),
+          endedTime: DateTimeUtil.toLocalTimeBy(endedTime),
         }),
       );
     });
@@ -351,6 +365,38 @@ describe('HabitService', () => {
 
       // then
       expect(habits).toHaveLength(3);
+    });
+
+    it('특정 날에 달성해야 하는 습관을 달성 여부 상관없이 조회합니다.', async () => {
+      // given
+      const user = userFactory.makeOne();
+      const mondayDate = '2021-08-16'; // 월요일
+      // 월요일 주기 습관
+      const habit = habitFactory.makeOne({
+        user: Reference.create(user),
+        isAllDay: false,
+        cycleWeek: false,
+        cycleMonday: true,
+        targetCount: 1,
+      });
+      achievementFactory.makeOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+      });
+      achievementFactory.makeOne({
+        habit: Reference.create(habit),
+        user: Reference.create(user),
+      });
+
+      // when
+      const habits = await habitService.findHabits({
+        userId: user.id,
+        date: mondayDate,
+      });
+
+      // then
+      expect(habits).toHaveLength(1);
+      expect(habits[0]?.achievement).toHaveLength(2);
     });
 
     it('습관을 조회할 때 달성 기록과 함께 조회합니다.', async () => {
