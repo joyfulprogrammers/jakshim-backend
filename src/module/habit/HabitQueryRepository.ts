@@ -2,8 +2,6 @@ import { InjectRepository } from '@mikro-orm/nestjs';
 import { EntityRepository } from '@mikro-orm/postgresql';
 import { Injectable } from '@nestjs/common';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
-import { LocalDate } from '@js-joda/core';
-import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 @Injectable()
 export class HabitQueryRepository {
@@ -20,9 +18,6 @@ export class HabitQueryRepository {
     date?: string;
   }): Promise<Habit[]> {
     const cycleConditions = Habit.getCycleOnDate(date);
-    const targetDate = LocalDate.parse(
-      date || DateTimeUtil.toString(LocalDate.now()),
-    ).atStartOfDay();
 
     const habits = await this.habitRepository
       .createQueryBuilder('habit')
@@ -34,18 +29,8 @@ export class HabitQueryRepository {
         $and: [
           // NOTE : 질의 메인테이블(?)의 컬럼 이름은 스네이크 케이스로 작성해야 하고
           { 'habit.user_id': userId, 'habit.deleted_at': null },
-          {
-            $or: [
-              // NODE : 조인 테이블의 컬럼 이름은 카멜 케이스로 작성해야 테스트를 통과한다.
-              { 'achievement.createdAt': null },
-              {
-                'achievement.createdAt': {
-                  $gte: targetDate,
-                  $lt: targetDate.plusDays(1),
-                },
-              },
-            ],
-          },
+          // NOTE : 조인 테이블의 컬럼 이름은 카멜 케이스로 작성해야 테스트를 통과한다. (기록을 위해 남겨둡니다.)
+          // { 'achievement.createdAt': null },
         ],
         $or: [{ isAllDay: true }, { cycleWeek: true }, { ...cycleConditions }],
       });

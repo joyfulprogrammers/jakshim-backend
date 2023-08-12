@@ -372,18 +372,18 @@ describe('HabitService', () => {
       const user = userFactory.makeOne();
       const mondayDate = '2021-08-16'; // 월요일
       // 월요일 주기 습관
-      const habit = habitFactory.makeOne({
+      const habit = await habitFactory.createOne({
         user: Reference.create(user),
         isAllDay: false,
         cycleWeek: false,
         cycleMonday: true,
         targetCount: 1,
       });
-      achievementFactory.makeOne({
+      await achievementFactory.createOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
       });
-      achievementFactory.makeOne({
+      await achievementFactory.createOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
       });
