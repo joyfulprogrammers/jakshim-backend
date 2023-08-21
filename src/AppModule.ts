@@ -23,7 +23,7 @@ import { LoggerModule } from './libs/logger/LoggerModule';
 @Module({
   imports: [
     MikroOrmModule.forRoot(config),
-    RedisModule.register('localhost', 6385),
+    RedisModule.register(),
     LoggerModule.register(),
     SessionOptionModule.register(
       'BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k',

@@ -2,17 +2,17 @@ import { HabitBadhabit } from 'src/entity/domain/habitBadhabit/HabitBadhabit.ent
 import { CustomMigrationGenerator } from './CustomMigrationGenerator';
 import { CustomNamingStrategy } from './CustomNamingStrategy';
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
-import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
+import { ReflectMetadataProvider } from '@mikro-orm/core';
 
 const config: MikroOrmModuleOptions = {
   debug: true,
   type: 'postgresql',
-  host: 'localhost',
-  user: 'test',
-  password: 'test',
-  dbName: 'test',
-  port: 5440,
-  metadataProvider: TsMorphMetadataProvider,
+  host: process.env.DB_HOST ?? 'localhost',
+  user: process.env.DB_USER ?? 'test',
+  password: process.env.DB_PASSWORD ?? 'test',
+  dbName: process.env.DB_NAME ?? 'test',
+  port: 5432,
+  metadataProvider: ReflectMetadataProvider,
   autoLoadEntities: true,
   entities: ['../entity/domain', HabitBadhabit],
   entitiesTs: ['../entity/domain', HabitBadhabit],
