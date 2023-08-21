@@ -12,10 +12,10 @@ import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
 
 @Entity({ tableName: 'achievements' })
 export class Achievement extends BaseTimeEntity {
-  @ManyToOne({ index: true })
+  @ManyToOne(() => User, { index: true })
   user: IdentifiedReference<User>;
 
-  @ManyToOne({ index: true })
+  @ManyToOne(() => Habit, { index: true })
   habit: IdentifiedReference<Habit>;
 
   @Property({

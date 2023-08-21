@@ -14,7 +14,7 @@ import { Exclude } from 'class-transformer';
 
 @Entity({ tableName: 'badhabits' })
 export class Badhabit extends BaseTimeEntity {
-  @ManyToOne({ index: true })
+  @ManyToOne(() => User, { index: true })
   user: IdentifiedReference<User>;
 
   @Exclude()

@@ -2,7 +2,6 @@ import {
   Entity,
   IdentifiedReference,
   ManyToOne,
-  // PrimaryKeyType,
   Reference,
 } from '@mikro-orm/core';
 import { Habit } from '../habit/Habit.entity';
@@ -10,10 +9,10 @@ import { Badhabit } from '../badhabit/Badhabit.entity';
 
 @Entity({ tableName: 'habit_badhabit' })
 export class HabitBadhabit {
-  @ManyToOne({ primary: true })
+  @ManyToOne(() => Habit, { primary: true })
   habit: IdentifiedReference<Habit>;
 
-  @ManyToOne({ primary: true })
+  @ManyToOne(() => Badhabit, { primary: true })
   badhabit: IdentifiedReference<Badhabit>;
 
   // NOTE : 이걸로 인해서 테스트에서 엔티티 생성을 하지 못함 ... undefined (reading __helper)
