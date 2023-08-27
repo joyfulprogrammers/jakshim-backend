@@ -8,12 +8,16 @@ import { LocalDateTime } from '@js-joda/core';
 import { HabitBadhabit } from '../../entity/domain/habitBadhabit/HabitBadhabit.entity';
 import { ErrorResponseStatus } from 'src/libs/res/ErrorResponseStatusResponseStatus';
 import { ResponseStatus } from 'src/libs/res/ResponseStatus';
+import { AchievementQueryRepository } from '../achievement/AchievementQueryRepository';
+import { Collection } from '@mikro-orm/core';
+import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
 
 @Injectable()
 export class HabitService {
   constructor(
     private readonly transactionService: TransactionService,
     private readonly habitQueryRepository: HabitQueryRepository,
+    private readonly achievementQueryRepository: AchievementQueryRepository,
   ) {}
 
   async createHabit(
@@ -161,6 +165,28 @@ export class HabitService {
   }
 
   async findHabits({ userId, date }: { userId: number; date?: string }) {
-    return this.habitQueryRepository.findHabits({ userId, date });
+    const habits = await this.habitQueryRepository.findHabits({ userId, date });
+
+    const achievements = await Promise.all(
+      habits.map(async (habit) =>
+        this.achievementQueryRepository.findTodayAchievementsByHabitId(
+          habit.id,
+        ),
+      ),
+    );
+
+    const result = habits.map((habit, index) => {
+      const achievement = achievements[index];
+      const achievementCollection = new Collection<Achievement, Habit>(
+        habit,
+        achievement,
+      );
+
+      habit.achievement = achievementCollection;
+
+      return habit;
+    });
+
+    return result;
   }
 }

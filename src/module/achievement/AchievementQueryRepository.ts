@@ -28,4 +28,20 @@ export class AchievementQueryRepository {
       },
     });
   }
+
+  async findTodayAchievementsByHabitId(
+    habitId: number,
+  ): Promise<Achievement[]> {
+    const habit = plainToInstance(Habit, { id: habitId });
+    const today = DateTimeUtil.getTodayMin();
+    const tommorow = today.plusDays(1);
+
+    return this.achievementRepository.find({
+      habit,
+      createdAt: {
+        $gte: today,
+        $lt: tommorow,
+      },
+    });
+  }
 }

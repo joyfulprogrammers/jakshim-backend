@@ -16,6 +16,7 @@ import { AchievementFactory } from 'test/factory/AchievementFactory';
 import { AchievementEntityModule } from 'src/entity/domain/achievement/AchievementEntityModule';
 import { faker } from '@mikro-orm/seeder';
 import { HabitFindResponse } from 'src/module/habit/dto/HabitFindResponse';
+import { AchievementQueryRepository } from 'src/module/achievement/AchievementQueryRepository';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -34,7 +35,12 @@ describe('HabitService', () => {
         BadhabitEntityModule,
         HabitBadhabitEntityModule,
       ],
-      providers: [HabitService, HabitQueryRepository, TransactionService],
+      providers: [
+        HabitService,
+        HabitQueryRepository,
+        AchievementQueryRepository,
+        TransactionService,
+      ],
     }).compile();
 
     orm = module.get(MikroORM);

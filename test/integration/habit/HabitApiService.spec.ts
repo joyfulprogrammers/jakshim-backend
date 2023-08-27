@@ -23,6 +23,7 @@ import { AchievementFactory } from 'test/factory/AchievementFactory';
 import { AchievementEntityModule } from 'src/entity/domain/achievement/AchievementEntityModule';
 import { BadhabitFactory } from 'test/factory/BadhabitFactory';
 import { HabitBadhabitFactory } from 'test/factory/HabitBadhabitFactory';
+import { AchievementQueryRepository } from 'src/module/achievement/AchievementQueryRepository';
 
 describe('HabitService', () => {
   let orm: MikroORM;
@@ -43,7 +44,12 @@ describe('HabitService', () => {
         BadhabitEntityModule,
         HabitBadhabitEntityModule,
       ],
-      providers: [HabitService, HabitQueryRepository, TransactionService],
+      providers: [
+        HabitService,
+        HabitQueryRepository,
+        AchievementQueryRepository,
+        TransactionService,
+      ],
     }).compile();
 
     orm = module.get(MikroORM);
@@ -367,25 +373,17 @@ describe('HabitService', () => {
       expect(habits).toHaveLength(3);
     });
 
-    it('특정 날에 달성해야 하는 습관을 달성 여부 상관없이 조회합니다.', async () => {
+    it('조회하는 요일에 달성 기록이 없더라도 해당 요일 습관을 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
       const mondayDate = '2021-08-16'; // 월요일
       // 월요일 주기 습관
-      const habit = await habitFactory.createOne({
+      await habitFactory.createOne({
         user: Reference.create(user),
         isAllDay: false,
         cycleWeek: false,
         cycleMonday: true,
         targetCount: 1,
-      });
-      await achievementFactory.createOne({
-        habit: Reference.create(habit),
-        user: Reference.create(user),
-      });
-      await achievementFactory.createOne({
-        habit: Reference.create(habit),
-        user: Reference.create(user),
       });
 
       // when
@@ -396,7 +394,7 @@ describe('HabitService', () => {
 
       // then
       expect(habits).toHaveLength(1);
-      expect(habits[0]?.achievement).toHaveLength(2);
+      expect(habits[0]?.achievement).toHaveLength(0);
     });
 
     it('습관을 조회할 때 달성 기록과 함께 조회합니다.', async () => {
@@ -409,10 +407,12 @@ describe('HabitService', () => {
       achievementFactory.makeOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
+        createdAt: LocalDateTime.now(),
       });
       await achievementFactory.createOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
+        createdAt: LocalDateTime.now(),
       });
 
       // when
@@ -423,7 +423,7 @@ describe('HabitService', () => {
       expect(foundHabit[0]?.achievement).toHaveLength(2);
     });
 
-    it('개별 습관을 조회할 땐 과거 달성 기록도 포함하여 조회합니다.', async () => {
+    it('습관을 조회할 때 다른 날 달성 기록을 제외한 당일 달성 기록과 함께 조회합니다.', async () => {
       // given
       const user = userFactory.makeOne();
       const habit = habitFactory.makeOne({
@@ -433,47 +433,75 @@ describe('HabitService', () => {
       achievementFactory.makeOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
-      });
-      achievementFactory.makeOne({
-        habit: Reference.create(habit),
-        user: Reference.create(user),
-        createdAt: LocalDateTime.now().minusDays(2),
+        createdAt: LocalDateTime.now().minusDays(1),
       });
       await achievementFactory.createOne({
         habit: Reference.create(habit),
         user: Reference.create(user),
-        createdAt: LocalDateTime.now().minusDays(1),
+        createdAt: LocalDateTime.now(),
       });
 
       // when
-      const foundHabit = await habitService.findOneHabit(habit.id, user.id);
+      const foundHabit = await habitService.findHabits({ userId: user.id });
 
       // then
-      expect(foundHabit).not.toBeFalsy();
-      expect(foundHabit?.achievement).toHaveLength(3);
+      expect(foundHabit).toHaveLength(1);
+      expect(foundHabit[0]?.achievement).toHaveLength(1);
     });
 
-    it('습관을 조회할 때 부정습관과 함께 조회합니다.', async () => {
-      // given
-      const user = userFactory.makeOne();
-      const habit = habitFactory.makeOne({
-        user: Reference.create(user),
-      });
-      const badhabit = badhabitFactory.makeOne({
-        user: Reference.create(user),
+    describe('개별 습관 조회', () => {
+      it('개별 습관을 조회할 땐 과거 달성 기록도 포함하여 조회합니다.', async () => {
+        // given
+        const user = userFactory.makeOne();
+        const habit = habitFactory.makeOne({
+          user: Reference.create(user),
+          isAllDay: true,
+        });
+        achievementFactory.makeOne({
+          habit: Reference.create(habit),
+          user: Reference.create(user),
+        });
+        achievementFactory.makeOne({
+          habit: Reference.create(habit),
+          user: Reference.create(user),
+          createdAt: LocalDateTime.now().minusDays(2),
+        });
+        await achievementFactory.createOne({
+          habit: Reference.create(habit),
+          user: Reference.create(user),
+          createdAt: LocalDateTime.now().minusDays(1),
+        });
+
+        // when
+        const foundHabit = await habitService.findOneHabit(habit.id, user.id);
+
+        // then
+        expect(foundHabit).not.toBeFalsy();
+        expect(foundHabit?.achievement).toHaveLength(3);
       });
 
-      await habitBadhabitFactory.createOne({
-        habit: Reference.create(habit),
-        badhabit: Reference.create(badhabit),
+      it('개별 습관을 조회할 때 부정습관과 함께 조회합니다.', async () => {
+        // given
+        const user = userFactory.makeOne();
+        const habit = habitFactory.makeOne({
+          user: Reference.create(user),
+        });
+        const badhabit = badhabitFactory.makeOne({
+          user: Reference.create(user),
+        });
+
+        await habitBadhabitFactory.createOne({
+          habit: Reference.create(habit),
+          badhabit: Reference.create(badhabit),
+        });
+
+        // when
+        const foundHabit = await habitService.findOneHabit(habit.id, user.id);
+
+        // then
+        expect(foundHabit).not.toBeFalsy();
+        expect(foundHabit?.habitBadhabit).toHaveLength(1);
       });
-
-      // when
-      const foundHabit = await habitService.findOneHabit(habit.id, user.id);
-
-      // then
-      expect(foundHabit).not.toBeFalsy();
-      expect(foundHabit?.habitBadhabit).toHaveLength(1);
     });
   });
 });
