@@ -2,7 +2,7 @@ services:
   db:
     image: postgres:13
     ports:
-      - '5440:5432'
+      - '5432:5432'
     container_name: jakshim_postgresql
     environment:
       - POSTGRES_DB=test
