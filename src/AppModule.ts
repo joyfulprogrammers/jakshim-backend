@@ -19,6 +19,7 @@ import { HabitApiModule } from './module/habit/HabitApiModule';
 import { AchievementApiModule } from './module/achievement/AchievementApiModule';
 import { BadhabitApiModule } from './module/badhabit/BadhabitApiModule';
 import { LoggerModule } from './libs/logger/LoggerModule';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { LoggerModule } from './libs/logger/LoggerModule';
     HabitApiModule,
     AchievementApiModule,
     BadhabitApiModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [],
   providers: [],

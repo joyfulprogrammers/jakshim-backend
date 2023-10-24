@@ -30,6 +30,7 @@
     "@mikro-orm/postgresql": "^5.5.3",
     "@mikro-orm/reflection": "^5.5.3",
     "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^3.1.1",
     "@nestjs/core": "^9.0.0",
     "@nestjs/passport": "^9.0.0",
     "@nestjs/platform-express": "^9.1.6",

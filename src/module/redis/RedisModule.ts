@@ -4,12 +4,7 @@ import { Redis } from 'ioredis';
 
 export class RedisModule {
   static register(): DynamicModule {
-    const redisClient = process.env.REDIS_URL
-      ? new Redis(process.env.REDIS_URL + '?family=6' || '')
-      : new Redis({
-          host: 'localhost',
-          port: 6385,
-        });
+    const redisClient = new Redis(process.env.REDIS_URL as string);
 
     return {
       module: RedisModule,
