@@ -14,7 +14,7 @@ const config: MikroOrmModuleOptions = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
-  port: process.env.DB_NAME ? Number(process.env.DB_NAME) : 5432,
+  port: process.env.PORT ? Number(process.env.PORT) : 5432,
   metadataProvider: ReflectMetadataProvider,
   autoLoadEntities: true,
   entities: ['../entity/domain', HabitBadhabit],
