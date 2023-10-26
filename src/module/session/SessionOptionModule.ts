@@ -3,6 +3,7 @@ import { Request } from 'express';
 import { nanoid } from 'nanoid';
 import { SessionOptions } from 'express-session';
 import { SessionConstant } from '../../constant/SessionConstant';
+import { ConfigService } from '@nestjs/config';
 
 export class SessionOptionModule {
   private readonly _secret: string;
@@ -14,13 +15,18 @@ export class SessionOptionModule {
     this._maxAge = maxAge;
   }
 
-  static register(secret: string, maxAge: number): DynamicModule {
+  static register(): DynamicModule {
     return {
       module: SessionOptionModule,
       providers: [
         {
           provide: SessionConstant.SESSION_OPTION,
-          useValue: new SessionOptionModule(secret, maxAge),
+          useFactory: (configService: ConfigService) =>
+            new SessionOptionModule(
+              configService.getOrThrow<string>('SESSION_SECRET'),
+              configService.getOrThrow<number>('SESSION_MAX_AGE'),
+            ),
+          inject: [ConfigService],
         },
       ],
       exports: [SessionConstant.SESSION_OPTION],

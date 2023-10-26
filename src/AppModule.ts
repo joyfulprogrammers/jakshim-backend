@@ -26,18 +26,14 @@ import { ConfigModule } from '@nestjs/config';
     MikroOrmModule.forRoot(config),
     RedisModule.register(),
     LoggerModule.register(),
-    SessionOptionModule.register(
-      'BzBdidyyqF5wglAu8DpnH5NY0hBGBy4k',
-      Date.now() + 30 * 86400 * 1000,
-    ),
-
+    SessionOptionModule.register(),
     // route modules
     AuthModule,
     UserModule,
     HabitApiModule,
     AchievementApiModule,
     BadhabitApiModule,
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, cache: true }),
   ],
   controllers: [],
   providers: [],

@@ -1,17 +1,18 @@
 import { DynamicModule } from '@nestjs/common';
 import { SessionConstant } from '../../constant/SessionConstant';
 import { Redis } from 'ioredis';
+import { ConfigService } from '@nestjs/config';
 
 export class RedisModule {
   static register(): DynamicModule {
-    const redisClient = new Redis(process.env.REDIS_URL as string);
-
     return {
       module: RedisModule,
       providers: [
         {
           provide: SessionConstant.REDIS,
-          useValue: redisClient,
+          useFactory: (configService: ConfigService) =>
+            new Redis(configService.getOrThrow<string>('REDIS_URL')),
+          inject: [ConfigService],
         },
       ],
       exports: [SessionConstant.REDIS],

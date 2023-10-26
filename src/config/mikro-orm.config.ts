@@ -3,6 +3,9 @@ import { CustomMigrationGenerator } from './CustomMigrationGenerator';
 import { CustomNamingStrategy } from './CustomNamingStrategy';
 import { MikroOrmModuleOptions } from '@mikro-orm/nestjs';
 import { ReflectMetadataProvider } from '@mikro-orm/core';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 const config: MikroOrmModuleOptions = {
   debug: true,
@@ -11,7 +14,7 @@ const config: MikroOrmModuleOptions = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   dbName: process.env.DB_NAME,
-  port: 5432,
+  port: process.env.DB_NAME ? Number(process.env.DB_NAME) : 5432,
   metadataProvider: ReflectMetadataProvider,
   autoLoadEntities: true,
   entities: ['../entity/domain', HabitBadhabit],
