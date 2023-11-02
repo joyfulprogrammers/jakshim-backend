@@ -7,9 +7,9 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { instanceToPlain } from 'class-transformer';
-import { ResponseEntity } from '../libs/res/ResponseEntity';
-import { ResponseStatus } from '../libs/res/ResponseStatus';
-import { Logger } from '../libs/logger/Logger';
+import { ResponseEntity } from '../../res/ResponseEntity';
+import { ResponseStatus } from '../../res/ResponseStatus';
+import { Logger } from '../../logger/Logger';
 
 @Catch(NotFoundException)
 export class NotFoundExceptionFilter implements ExceptionFilter {

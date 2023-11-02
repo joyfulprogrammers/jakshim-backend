@@ -9,7 +9,7 @@ import { instanceToPlain } from 'class-transformer';
 import { Response } from 'express';
 import { ResponseEntity } from 'src/libs/res/ResponseEntity';
 import { ResponseStatus } from 'src/libs/res/ResponseStatus';
-import { Logger } from '../libs/logger/Logger';
+import { Logger } from '../../logger/Logger';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {

@@ -10,8 +10,8 @@ import { ValidationError } from 'class-validator';
 import { Response } from 'express';
 import { ErrorResponseStatus } from 'src/libs/res/ErrorResponseStatusResponseStatus';
 import { ResponseEntity } from 'src/libs/res/ResponseEntity';
-import { CustomValidationError } from './CustomValidationError';
-import { Logger } from '../libs/logger/Logger';
+import { CustomValidationError } from '../../exception/CustomValidationError';
+import { Logger } from '../../logger/Logger';
 
 @Catch(BadRequestException)
 export class BadParameterExceptionFilter implements ExceptionFilter {

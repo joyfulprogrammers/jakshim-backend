@@ -4,20 +4,22 @@ import {
   INestApplication,
   ValidationPipe,
 } from '@nestjs/common';
-import { NotFoundExceptionFilter } from '../../../exceptions/NotFoundExceptionFilter';
+import { NotFoundExceptionFilter } from '../filter/NotFoundExceptionFilter';
 import { Logger } from '../../logger/Logger';
-import { BadParameterExceptionFilter } from '../../../exceptions/BadParameterExceptionFilter';
-import { HttpExceptionFilter } from '../../../exceptions/HttpExceptionFilter';
+import { BadParameterExceptionFilter } from '../filter/BadParameterExceptionFilter';
+import { HttpExceptionFilter } from '../filter/HttpExceptionFilter';
 import { Reflector } from '@nestjs/core';
 import { ValidationError } from 'class-validator';
-import { CustomValidationError } from '../../../exceptions/CustomValidationError';
+import { CustomValidationError } from '../../exception/CustomValidationError';
 import { FormatQueryInterceptor } from '../interceptor/FormatQueryInterceptor';
 
 export function setNestApp<T extends INestApplication>(app: T): void {
+  const logger = app.get(Logger);
+
   app.useGlobalFilters(
-    new NotFoundExceptionFilter(app.get(Logger)),
-    new BadParameterExceptionFilter(app.get(Logger)),
-    new HttpExceptionFilter(app.get(Logger)),
+    new NotFoundExceptionFilter(logger),
+    new BadParameterExceptionFilter(logger),
+    new HttpExceptionFilter(logger),
   );
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
