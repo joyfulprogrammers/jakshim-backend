@@ -12,15 +12,20 @@ import { Reflector } from '@nestjs/core';
 import { ValidationError } from 'class-validator';
 import { CustomValidationError } from '../../exception/CustomValidationError';
 import { FormatQueryInterceptor } from '../interceptor/FormatQueryInterceptor';
+import { GlobalExceptionFilter } from '../filter/GlobalExceptionFilter';
+import { DomainExceptionFilter } from '../filter/DomainExceptionFilter';
 
 export function setNestApp<T extends INestApplication>(app: T): void {
   const logger = app.get(Logger);
 
   app.useGlobalFilters(
-    new NotFoundExceptionFilter(logger),
-    new BadParameterExceptionFilter(logger),
+    new GlobalExceptionFilter(logger),
     new HttpExceptionFilter(logger),
+    new NotFoundExceptionFilter(logger),
+    new DomainExceptionFilter(logger),
+    new BadParameterExceptionFilter(logger),
   );
+
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
     new FormatQueryInterceptor(),
