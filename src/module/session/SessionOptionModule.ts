@@ -45,8 +45,4 @@ export class SessionOptionModule {
       genid: (_req: Request) => nanoid(this._sessionIdLength),
     };
   }
-
-  get sessionIdLength() {
-    return this._sessionIdLength;
-  }
 }
