@@ -12,13 +12,11 @@ import { AchievementRequest } from 'src/module/achievement/dto/AchievementReques
 import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
 import { HabitApiModule } from 'src/module/habit/HabitApiModule';
 import { HabitService } from 'src/module/habit/HabitService';
-import { AchievementEntityModule } from 'src/entity/domain/achievement/AchievementEntityModule';
 import { HabitQueryRepository } from 'src/module/habit/HabitQueryRepository';
-import { HabitEntityModule } from 'src/entity/domain/habit/HabitEntityModule';
 import { AchievementFactory } from 'test/factory/AchievementFactory';
 import { faker } from '@mikro-orm/seeder';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
-import { BadhabitEntityModule } from 'src/entity/domain/badhabit/BadhabitEntityModule';
+import { EntityModule } from '../../../src/entity/domain/EntityModule';
 
 describe('AchievementService', () => {
   let orm: MikroORM;
@@ -29,13 +27,7 @@ describe('AchievementService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        getSqliteMikroOrmModule(),
-        HabitApiModule,
-        AchievementEntityModule,
-        HabitEntityModule,
-        BadhabitEntityModule,
-      ],
+      imports: [getSqliteMikroOrmModule(), HabitApiModule, EntityModule],
       providers: [
         AchievementService,
         AchievementQueryRepository,

@@ -1,10 +1,7 @@
 import { MikroORM } from '@mikro-orm/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Badhabit } from 'src/entity/domain/badhabit/Badhabit.entity';
-import { BadhabitEntityModule } from 'src/entity/domain/badhabit/BadhabitEntityModule';
-import { HabitEntityModule } from 'src/entity/domain/habit/HabitEntityModule';
 import { TransactionService } from 'src/entity/transaction/TransactionService';
-import { BadhabitQueryRepository } from 'src/module/badhabit/BadhabitQueryRepository';
 import { BadhabitService } from 'src/module/badhabit/BadhabitService';
 import { getSqliteMikroOrmModule } from 'test/getSqliteMikroOrmModule';
 
@@ -14,12 +11,8 @@ describe('BadhabitService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [
-        getSqliteMikroOrmModule(),
-        BadhabitEntityModule,
-        HabitEntityModule,
-      ],
-      providers: [BadhabitService, BadhabitQueryRepository, TransactionService],
+      imports: [getSqliteMikroOrmModule()],
+      providers: [BadhabitService, TransactionService],
     }).compile();
 
     orm = module.get(MikroORM);
