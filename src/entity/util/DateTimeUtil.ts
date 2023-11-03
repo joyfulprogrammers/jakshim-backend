@@ -113,8 +113,8 @@ export class DateTimeUtil {
     return LocalTime.of(23, 59);
   }
 
-  static getTodayMin(): LocalDateTime {
-    return LocalDate.now().atStartOfDay();
+  static getTodayMin(now = LocalDate.now()): LocalDateTime {
+    return now.atStartOfDay();
   }
 
   static toLocalDateBy(strDate: string): LocalDate | null {

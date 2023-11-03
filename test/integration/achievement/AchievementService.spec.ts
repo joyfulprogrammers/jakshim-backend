@@ -10,7 +10,6 @@ import { UserFactory } from '../../factory/UserFactory';
 import { HabitFactory } from '../../factory/HabitFactory';
 import { AchievementRequest } from 'src/module/achievement/dto/AchievementRequest';
 import { Achievement } from 'src/entity/domain/achievement/Achievement.entity';
-import { HabitApiModule } from 'src/module/habit/HabitApiModule';
 import { HabitService } from 'src/module/habit/HabitService';
 import { HabitQueryRepository } from 'src/module/habit/HabitQueryRepository';
 import { AchievementFactory } from 'test/factory/AchievementFactory';
@@ -27,7 +26,7 @@ describe('AchievementService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [getSqliteMikroOrmModule(), HabitApiModule, EntityModule],
+      imports: [getSqliteMikroOrmModule(), EntityModule],
       providers: [
         AchievementService,
         AchievementQueryRepository,

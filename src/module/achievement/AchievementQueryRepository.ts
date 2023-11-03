@@ -5,6 +5,7 @@ import { plainToInstance } from 'class-transformer';
 import { Habit } from '../../entity/domain/habit/Habit.entity';
 import { Achievement } from '../../entity/domain/achievement/Achievement.entity';
 import { DateTimeUtil } from 'src/entity/util/DateTimeUtil';
+import { LocalDate } from '@js-joda/core';
 
 @Injectable()
 export class AchievementQueryRepository {
@@ -15,16 +16,18 @@ export class AchievementQueryRepository {
 
   async findTodayAchievementByHabitId(
     habitId: number,
+    now = LocalDate.now(),
   ): Promise<Achievement | null> {
-    const habit = plainToInstance(Habit, { id: habitId });
-    const today = DateTimeUtil.getTodayMin();
-    const tommorow = today.plusDays(1);
+    const today = DateTimeUtil.getTodayMin(now);
+    const tomorrow = today.plusDays(1);
 
     return this.achievementRepository.findOne({
-      habit,
+      habit: {
+        id: habitId,
+      },
       createdAt: {
         $gte: today,
-        $lt: tommorow,
+        $lt: tomorrow,
       },
     });
   }
