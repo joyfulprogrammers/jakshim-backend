@@ -59,3 +59,27 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
+      - name: notify failure alarm
+        uses: 8398a7/action-slack@v3
+        if: failure()
+        with:
+          status: custom
+          custom_payload: |
+            {
+              text: "Git Action Build 실패",
+              attachments: [{
+                color: 'danger',
+                fields: [
+                  {
+                    title: 'Git Action 링크',
+                    value: '<https://github.com/joyfulprogrammers/jakshim-backend/actions/workflows/build.yml|링크 바로가기>',
+                    short: false
+                  }
+                ],
+                actions: [{}]  // Don't know if we actually need this, but it is shown in the docs as empty
+              }]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
